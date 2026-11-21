@@ -3,11 +3,11 @@ extends RefCounted
 
 ## Every id, tag and ammunition pool in this pack.
 ##
-## [b]Named by role, never by model[/b], as zee-dot-weapons' are, and for its reason: the
+## [b]Named by role, never by model[/b], as zee-gs-weapons' are, and for its reason: the
 ## model file is Kenney's export name, and a game that swapped the art would find every rule
 ## pointing at the wrong file. [ZedWeaponPack] is the only file that names a model.
 ##
-## [b]No id here may be one zee-dot-weapons has.[/b] zee's own ids win a clash (see
+## [b]No id here may be one zee-gs-weapons has.[/b] zee's own ids win a clash (see
 ## `ZeeWeaponPack.add_source`), so a `pistol` here would silently never exist. That is why
 ## these read `service_pistol` and `pump_shotgun`; the suite checks there is no overlap.
 
@@ -74,7 +74,7 @@ static func all() -> Array[StringName]:
 
 # --- Attachments -----------------------------------------------------------------
 #
-# dot-weapon's attachment ids ([GSWeaponAttachment]), each on one of its mounts. Named by
+# gs-weapon's attachment ids ([GSWeaponAttachment]), each on one of its mounts. Named by
 # what they do, like the weapons.
 
 const RED_DOT := &"red_dot"

@@ -1,14 +1,14 @@
-![Zed Weapons banner](https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/banner.png)
+![Zed Weapons banner](https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/banner.png)
 
-Sixteen real-world weapons and zombie-game throwables for GameSpice games: pistols, an Uzi, assault rifles, shotguns, a hunting rifle, a machine gun, two launchers, a flamethrower, a molotov, a pipe bomb and a bile jar. It adds to zee-dot-weapons rather than replacing it, and every number below is a default read straight from the pack's data that a game or server can change without touching the pack.
+Sixteen real-world weapons and zombie-game throwables for GameSpice games: pistols, an Uzi, assault rifles, shotguns, a hunting rifle, a machine gun, two launchers, a flamethrower, a molotov, a pipe bomb and a bile jar. It adds to zee-gs-weapons rather than replacing it, and every number below is a default read straight from the pack's data that a game or server can change without touching the pack.
 
 ### In GameSpice and Fatal Contact
 
-- GameSpice:** the pack is published to the Workshop as `gamemann/zed-dot-weapons`, beside `gamemann/zee-dot-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
-- **Fatal Contact:** FC's own weapons are [fc-weapons](https://github.com/zees-games/fc-weapons). An FC server can add this pack and zee-dot-weapons to its overlay for extra weapons.
+- GameSpice:** the pack is published to the Workshop as `gamemann/zed-gs-weapons`, beside `gamemann/zee-gs-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
+- **Fatal Contact:** FC's own weapons are [fc-weapons](https://github.com/zees-games/fc-weapons). An FC server can add this pack and zee-gs-weapons to its overlay for extra weapons.
 - **Your own Godot game:** link `addons/zed_weapons` beside `addons/zee_weapons` and call `ZedWeaponPack.install()`, as in [Using it](#using-it). Server owners retune any weapon in `cfg/addons/zed_weapons/weapon/<id>.yml`.
 
-The weapons extend [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) with a real-world look. Made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone). Any game that uses zee-dot-weapons can carry both packs at once. It is part of the [**GameSpice collection**](https://gamespice.net) for Godot 4.
+The weapons extend [zee-gs-weapons](https://github.com/zees-games/zee-gs-weapons) with a real-world look. Made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone). Any game that uses zee-gs-weapons can carry both packs at once. It is part of the [**GameSpice collection**](https://gamespice.net) for Godot 4.
 
 The pack has its own test suite, but little of it has been in front of real players. Please report anything you run into.
 
@@ -21,31 +21,31 @@ The pack has its own test suite, but little of it has been in front of real play
 | 4 Heavy | Machine Gun, Grenade Launcher, Rocket Launcher, Flamethrower |
 | 5 Thrown | Molotov, Pipe Bomb, Bile Jar |
 
-The guns share zee-dot-weapons' ammunition, so a box of ammo fills both packs' guns. The flamethrower has its own fuel tank and no reload. Throwables are one each.
+The guns share zee-gs-weapons' ammunition, so a box of ammo fills both packs' guns. The flamethrower has its own fuel tank and no reload. Throwables are one each.
 
 The assault carbine is a high-detail gun (`assets/hq/`, about 13k triangles). It has sockets for six attachments, listed by `ZedWeaponPack.attachments()`: red dot, 4x scope, suppressor, foregrip, laser sight and extended magazine.
 
-What a throwable does when it lands is up to the game, because dot-weapon spawns nothing itself. Each one carries a tag (`molotov`, `pipe_bomb`, `bile`), and the flamethrower is tagged `incendiary`. In game-zombie-zone a molotov starts a fire, a pipe bomb beeps, draws the horde and goes off, and a bile jar pulls nearby zombies to where it broke.
+What a throwable does when it lands is up to the game, because gs-weapon spawns nothing itself. Each one carries a tag (`molotov`, `pipe_bomb`, `bile`), and the flamethrower is tagged `incendiary`. In game-zombie-zone a molotov starts a fire, a pipe bomb beeps, draws the horde and goes off, and a bile jar pulls nearby zombies to where it broke.
 
 <!-- gen_readme:summary -->
 | | Weapon | Class | Damage | Fire rate |
 | --- | --- | --- | --- | --- |
-| <a href="#service-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/service_pistol_thumb.webp" width="160" alt="Service Pistol"></a> | [Service Pistol](#service-pistol) | Pistol | 28 | one shot every 0.16 s |
-| <a href="#silenced-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/silenced_pistol_thumb.webp" width="160" alt="Silenced Pistol"></a> | [Silenced Pistol](#silenced-pistol) | Pistol | 24 | one shot every 0.16 s |
-| <a href="#uzi"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/uzi_thumb.webp" width="160" alt="Uzi"></a> | [Uzi](#uzi) | SMG | 14 | 960 rpm |
-| <a href="#assault-carbine"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/assault_carbine_thumb.webp" width="160" alt="Assault Carbine"></a> | [Assault Carbine](#assault-carbine) | Assault rifle | 26 | 768 rpm |
-| <a href="#ak-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/ak_rifle_thumb.webp" width="160" alt="AK Rifle"></a> | [AK Rifle](#ak-rifle) | Assault rifle | 32 | 640 rpm |
-| <a href="#tactical-smg"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/tactical_smg_thumb.webp" width="160" alt="Tactical SMG"></a> | [Tactical SMG](#tactical-smg) | SMG | 19 | 768 rpm |
-| <a href="#pump-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pump_shotgun_thumb.webp" width="160" alt="Pump Shotgun"></a> | [Pump Shotgun](#pump-shotgun) | Shotgun | 14 x 10 | one shot every 0.86 s |
-| <a href="#sawed-off"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/sawed_off_thumb.webp" width="160" alt="Sawed-Off"></a> | [Sawed-Off](#sawed-off) | Shotgun | 12 x 14 | one shot every 0.25 s |
-| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/hunting_rifle_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Rifle | 90 | one shot every 1 s |
-| <a href="#machine-gun"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/machine_gun_thumb.webp" width="160" alt="Machine Gun"></a> | [Machine Gun](#machine-gun) | Heavy | 22 | 768 rpm |
-| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/grenade_launcher_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | one shot every 1 s |
-| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/rocket_launcher_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | one shot every 1.5 s |
-| <a href="#flamethrower"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/flamethrower_thumb.webp" width="160" alt="Flamethrower"></a> | [Flamethrower](#flamethrower) | Heavy | 5 x 4 | 640 rpm |
-| <a href="#molotov"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/molotov_thumb.webp" width="160" alt="Molotov"></a> | [Molotov](#molotov) | Thrown | - | one throw every 1 s |
-| <a href="#pipe-bomb"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pipe_bomb_thumb.webp" width="160" alt="Pipe Bomb"></a> | [Pipe Bomb](#pipe-bomb) | Thrown | 300 splash | one throw every 1 s |
-| <a href="#bile-jar"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/bile_jar_thumb.webp" width="160" alt="Bile Jar"></a> | [Bile Jar](#bile-jar) | Thrown | - | one throw every 1 s |
+| <a href="#service-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/service_pistol_thumb.webp" width="160" alt="Service Pistol"></a> | [Service Pistol](#service-pistol) | Pistol | 28 | one shot every 0.16 s |
+| <a href="#silenced-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/silenced_pistol_thumb.webp" width="160" alt="Silenced Pistol"></a> | [Silenced Pistol](#silenced-pistol) | Pistol | 24 | one shot every 0.16 s |
+| <a href="#uzi"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/uzi_thumb.webp" width="160" alt="Uzi"></a> | [Uzi](#uzi) | SMG | 14 | 960 rpm |
+| <a href="#assault-carbine"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/assault_carbine_thumb.webp" width="160" alt="Assault Carbine"></a> | [Assault Carbine](#assault-carbine) | Assault rifle | 26 | 768 rpm |
+| <a href="#ak-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/ak_rifle_thumb.webp" width="160" alt="AK Rifle"></a> | [AK Rifle](#ak-rifle) | Assault rifle | 32 | 640 rpm |
+| <a href="#tactical-smg"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/tactical_smg_thumb.webp" width="160" alt="Tactical SMG"></a> | [Tactical SMG](#tactical-smg) | SMG | 19 | 768 rpm |
+| <a href="#pump-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/pump_shotgun_thumb.webp" width="160" alt="Pump Shotgun"></a> | [Pump Shotgun](#pump-shotgun) | Shotgun | 14 x 10 | one shot every 0.86 s |
+| <a href="#sawed-off"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/sawed_off_thumb.webp" width="160" alt="Sawed-Off"></a> | [Sawed-Off](#sawed-off) | Shotgun | 12 x 14 | one shot every 0.25 s |
+| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/hunting_rifle_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Rifle | 90 | one shot every 1 s |
+| <a href="#machine-gun"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/machine_gun_thumb.webp" width="160" alt="Machine Gun"></a> | [Machine Gun](#machine-gun) | Heavy | 22 | 768 rpm |
+| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/grenade_launcher_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | one shot every 1 s |
+| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/rocket_launcher_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | one shot every 1.5 s |
+| <a href="#flamethrower"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/flamethrower_thumb.webp" width="160" alt="Flamethrower"></a> | [Flamethrower](#flamethrower) | Heavy | 5 x 4 | 640 rpm |
+| <a href="#molotov"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/molotov_thumb.webp" width="160" alt="Molotov"></a> | [Molotov](#molotov) | Thrown | - | one throw every 1 s |
+| <a href="#pipe-bomb"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/pipe_bomb_thumb.webp" width="160" alt="Pipe Bomb"></a> | [Pipe Bomb](#pipe-bomb) | Thrown | 300 splash | one throw every 1 s |
+| <a href="#bile-jar"><img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/bile_jar_thumb.webp" width="160" alt="Bile Jar"></a> | [Bile Jar](#bile-jar) | Thrown | - | one throw every 1 s |
 
 *Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 <!-- /gen_readme:summary -->
@@ -58,7 +58,7 @@ Link `addons/zed_weapons` next to `addons/zee_weapons` and call `install()` once
 ZedWeaponPack.install()
 ```
 
-That adds the sixteen weapons to zee-dot-weapons' catalogue, their models to its art table and their reports to its sounds. `ZedWeaponPack.uninstall()` takes them out again.
+That adds the sixteen weapons to zee-gs-weapons' catalogue, their models to its art table and their reports to its sounds. `ZedWeaponPack.uninstall()` takes them out again.
 
 The models are under `assets/`. A game that vendors them (because it is delivered as a pack) copies `assets/weapon-pack` and `assets/food-kit` next to zee's art.
 
@@ -66,7 +66,7 @@ The pack is also published as a Workshop weapon pack: `provides.json` and `weapo
 
 ## Requirements
 
-Godot 4.7, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) (with its `add_source` support), and what it needs: [dot-core](https://github.com/gamespice-platform/core), [dot-combat](https://github.com/gamespice-platform/combat) and [dot-weapon](https://github.com/gamespice-platform/weapon). [dot-bootstrap](https://github.com/gamespice-platform/bootstrap) fetches them.
+Godot 4.7, [zee-gs-weapons](https://github.com/zees-games/zee-gs-weapons) (with its `add_source` support), and what it needs: [gs-core](https://github.com/gamespice-platform/core), [gs-combat](https://github.com/gamespice-platform/combat) and [gs-weapon](https://github.com/gamespice-platform/weapon). [gs-bootstrap](https://github.com/gamespice-platform/bootstrap) fetches them.
 
 ## Running it
 
@@ -77,14 +77,14 @@ Godot 4.7, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) (wit
 | `tools/screenshot.sh --rack` | Every weapon on a rack, with a red pip on each muzzle |
 | `tools/screenshot.sh <id>` | One weapon in first person |
 
-The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-kit` and `assets/melee` from a zee-dot-weapons checkout (dot-bootstrap does).
+The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-kit` and `assets/melee` from a zee-gs-weapons checkout (gs-bootstrap does).
 
 <!-- gen_readme:weapons -->
 ## The weapons
 
 ### Service Pistol
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/service_pistol.webp" width="1280" alt="Service Pistol, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/service_pistol.webp" width="1280" alt="Service Pistol, studio render">
 
 **Pistol** `service_pistol`. A high-detail service pistol with a fifteen-round magazine. Hits harder than zee's dart pistol and reloads quickly.
 
@@ -106,7 +106,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Silenced Pistol
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/silenced_pistol.webp" width="1280" alt="Silenced Pistol, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/silenced_pistol.webp" width="1280" alt="Silenced Pistol, studio render">
 
 **Pistol** `silenced_pistol`. A suppressed pistol with a small sight. A little less damage and a smaller magazine than the service pistol.
 
@@ -128,7 +128,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Uzi
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/uzi.webp" width="1280" alt="Uzi, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/uzi.webp" width="1280" alt="Uzi, studio render">
 
 **SMG** `uzi`. A sidearm-slot bullet hose. Very fast and loose, best held close to the horde.
 
@@ -150,7 +150,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Assault Carbine
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/assault_carbine.webp" width="1280" alt="Assault Carbine, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/assault_carbine.webp" width="1280" alt="Assault Carbine, studio render">
 
 **Assault rifle** `assault_carbine`. The high-detail carbine, about 13k triangles, with sockets for a red dot, 4x scope, suppressor, foregrip, laser and extended magazine. Accurate with a three-round burst.
 
@@ -173,7 +173,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### AK Rifle
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/ak_rifle.webp" width="1280" alt="AK Rifle, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/ak_rifle.webp" width="1280" alt="AK Rifle, studio render">
 
 **Assault rifle** `ak_rifle`. Heavier rounds than the carbine with more kick. Hard-hitting in full auto if you can hold it on target.
 
@@ -194,7 +194,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Tactical SMG
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/tactical_smg.webp" width="1280" alt="Tactical SMG, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/tactical_smg.webp" width="1280" alt="Tactical SMG, studio render">
 
 **SMG** `tactical_smg`. A fifty-round SMG for clearing crowds. Fast, light and long-lasting between reloads.
 
@@ -217,7 +217,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Pump Shotgun
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pump_shotgun.webp" width="1280" alt="Pump Shotgun, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/pump_shotgun.webp" width="1280" alt="Pump Shotgun, studio render">
 
 **Shotgun** `pump_shotgun`. Ten pellets a shot and eight shells in the tube. The dependable crowd-stopper at close range.
 
@@ -237,7 +237,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Sawed-Off
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/sawed_off.webp" width="1280" alt="Sawed-Off, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/sawed_off.webp" width="1280" alt="Sawed-Off, studio render">
 
 **Shotgun** `sawed_off`. Two barrels and fourteen pellets each. Devastating at arm's length, useless past fifteen metres.
 
@@ -258,7 +258,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Hunting Rifle
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/hunting_rifle.webp" width="1280" alt="Hunting Rifle, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/hunting_rifle.webp" width="1280" alt="Hunting Rifle, studio render">
 
 **Rifle** `hunting_rifle`. A scoped bolt-action that drops almost anything in one shot. Pinpoint standing still, wild on the move.
 
@@ -279,7 +279,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Machine Gun
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/machine_gun.webp" width="1280" alt="Machine Gun, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/machine_gun.webp" width="1280" alt="Machine Gun, studio render">
 
 **Heavy** `machine_gun`. A belt-fed machine gun with a hundred-round box. Slow to bring up and slow to reload, it holds a doorway on its own.
 
@@ -301,7 +301,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Grenade Launcher
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/grenade_launcher.webp" width="1280" alt="Grenade Launcher, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/grenade_launcher.webp" width="1280" alt="Grenade Launcher, studio render">
 
 **Launcher** `grenade_launcher`. A single-shot launcher with a big splash. Lob it into a group and reload.
 
@@ -322,7 +322,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Rocket Launcher
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/rocket_launcher.webp" width="1280" alt="Rocket Launcher, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/rocket_launcher.webp" width="1280" alt="Rocket Launcher, studio render">
 
 **Launcher** `rocket_launcher`. One rocket, the biggest blast in the pack and a long reload. Save it for the big ones.
 
@@ -343,7 +343,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Flamethrower
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/flamethrower.webp" width="1280" alt="Flamethrower, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/flamethrower.webp" width="1280" alt="Flamethrower, studio render">
 
 **Heavy** `flamethrower`. A short cone of fire from its own fuel tank, with no reload. Tagged incendiary, so a game can set what it hits alight.
 
@@ -362,7 +362,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Molotov
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/molotov.webp" width="1280" alt="Molotov, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/molotov.webp" width="1280" alt="Molotov, studio render">
 
 **Thrown** `molotov`. A bottle that breaks where it lands. In game-zombie-zone it starts a fire; elsewhere the game decides.
 
@@ -381,7 +381,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Pipe Bomb
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pipe_bomb.webp" width="1280" alt="Pipe Bomb, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/pipe_bomb.webp" width="1280" alt="Pipe Bomb, studio render">
 
 **Thrown** `pipe_bomb`. The biggest splash of any weapon in the pack. In game-zombie-zone it beeps, draws the horde and goes off.
 
@@ -401,7 +401,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 ### Bile Jar
 
-<img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/bile_jar.webp" width="1280" alt="Bile Jar, studio render">
+<img src="https://raw.githubusercontent.com/zees-games/zed-gs-weapons/main/docs/img/bile_jar.webp" width="1280" alt="Bile Jar, studio render">
 
 **Thrown** `bile_jar`. A jar that breaks where it lands. In game-zombie-zone it pulls nearby zombies to the spot.
 

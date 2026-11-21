@@ -5,7 +5,7 @@ extends SceneTree
 ##
 ## [b]Why they cannot be used as imported.[/b] The Food Kit's GLBs name an external
 ## `Textures/colormap.png`, and the import records it as `res://assets/food-kit/Textures/…`.
-## A game delivered as a dot-cloud pack is mounted under `res://dot_cloud/<id>/<version>/`,
+## A game delivered as a gs-cloud pack is mounted under `res://gs_cloud/<id>/<version>/`,
 ## where that absolute path does not exist, so the bottle loads white. (The Weapon Pack's
 ## models use plain material colours and have no such path.) An ImageTexture made from the
 ## pixels belongs to the scene it is saved in, so the baked scene has no dependency at all.

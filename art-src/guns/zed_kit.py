@@ -1,4 +1,4 @@
-# The kitbash toolkit the gun recipes (zed_guns.py) are written in. A copy of zee-dot-weapons'
+# The kitbash toolkit the gun recipes (zed_guns.py) are written in. A copy of zee-gs-weapons'
 # art-src/guns/zee_kit.py (same author, same CC0 donors), with its own export at the end: this
 # pack's guns stand on their base, point +Z and are not centred (see the pack's CLAUDE.md).
 #

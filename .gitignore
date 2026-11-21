@@ -3,20 +3,20 @@
 .import/
 /android/
 
-# The dot-* addons and zee-dot-weapons are separate repositories and are linked in, never
+# The gs-* addons and zee-gs-weapons are separate repositories and are linked in, never
 # committed. bootstrap.sh derives this project's dependencies from the lines below.
-/addons/dot_core
-/addons/dot_profile
-/addons/dot_combat
-/addons/dot_weapon
-/addons/dot_net
-/addons/dot_player
-/addons/dot_player_controller
-/addons/dot_player_char
-/addons/dot_physics
+/addons/gs_core
+/addons/gs_profile
+/addons/gs_combat
+/addons/gs_weapon
+/addons/gs_net
+/addons/gs_player
+/addons/gs_player_controller
+/addons/gs_player_char
+/addons/gs_physics
 /addons/zee_weapons
 
-# zee-dot-weapons' own art, linked in so the range and the rack can draw zee's arms and
+# zee-gs-weapons' own art, linked in so the range and the rack can draw zee's arms and
 # weapons beside this pack's. Never committed: it is zee's.
 /assets/arms
 /assets/blaster-kit
@@ -41,11 +41,11 @@ Thumbs.db
 
 # Baked maps, for looking at
 /art-src/hq/out/maps/
-/addons/dot_audio
+/addons/gs_audio
 
 # Linked addons (separate repositories, symlinked in for local development).
-/addons/dot_bot
-/addons/dot_bot_record
-/addons/dot_sim
-/addons/dot_sql
+/addons/gs_bot
+/addons/gs_bot_record
+/addons/gs_sim
+/addons/gs_sql
 /addons/godot-sqlite

@@ -1,10 +1,10 @@
 class_name ZedWeaponPack
 extends "zed_weapon_pack_art.gd"
 
-## The second pack: fourteen weapons as dot-weapon documents, their art as zee-dot-weapons
+## The second pack: fourteen weapons as gs-weapon documents, their art as zee-gs-weapons
 ## art entries, and [method install], which hands both to zee.
 ##
-## [b]A pack on top of a pack, not beside it.[/b] zee-dot-weapons already has the half that
+## [b]A pack on top of a pack, not beside it.[/b] zee-gs-weapons already has the half that
 ## draws (rig, view model, world model, effects, sounds, netcode, rollback), and a second
 ## copy of all that for fourteen more weapons would be two rigs a game has to choose between.
 ## So this is only content: documents a server validates, filenames a client loads, and a
@@ -12,7 +12,7 @@ extends "zed_weapon_pack_art.gd"
 ## which is every rig's default, so a game that calls [method install] carries both packs on
 ## one rig with nothing else changed.
 ##
-## [b]What a throwable does is the game's.[/b] dot-weapon spawns nothing; it describes a
+## [b]What a throwable does is the game's.[/b] gs-weapon spawns nothing; it describes a
 ## projectile and hands it over. The molotov, the pipe bomb and the bile jar are thrown the
 ## way zee's frag is, and say what they are by their tags ([ZedWeaponIds]).
 
@@ -22,9 +22,9 @@ const SOURCE := &"zed"
 
 const TICK_RATE := 64
 
-const HITSCAN := "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
-const PROJECTILE := "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
-const THROWN := "res://addons/dot_weapon/behaviour/dot_weapon_thrown.gd"
+const HITSCAN := "res://addons/gs_weapon/behaviour/gs_weapon_hitscan.gd"
+const PROJECTILE := "res://addons/gs_weapon/behaviour/gs_weapon_projectile.gd"
+const THROWN := "res://addons/gs_weapon/behaviour/gs_weapon_thrown.gd"
 
 
 
@@ -38,7 +38,7 @@ static func sec_ticks(seconds: float) -> int:
 
 # --- Installing ---------------------------------------------------------------
 
-## Adds this pack's weapons, art and sounds to zee-dot-weapons. Safe to call twice.
+## Adds this pack's weapons, art and sounds to zee-gs-weapons. Safe to call twice.
 ##
 ## [b]Before the first rig is set up.[/b] A rig builds its catalogue once, in `setup()`, so a
 ## rig built before this ran carries zee's weapons only, for as long as it lives.
@@ -46,7 +46,7 @@ static func install() -> void:
 	# [b]A static method, never a lambda.[/b] zee keeps these in a static variable, which the
 	# engine clears after it has freed the scripts at exit; a lambda held there outlives the
 	# script it was written in and the process aborts on the way out (`double free or
-	# corruption`, exit 134, after every check has passed). Found by dot-server-deploy's
+	# corruption`, exit 134, after every check has passed). Found by gs-server-deploy's
 	# zombiezone_client; `tools/exit_check.gd` and the suite's "exiting" section hold it.
 	ZeeWeaponPack.add_source(SOURCE, Callable(ZedWeaponPack, &"weapons"))
 	ZeeWeaponArtTable.add_source(SOURCE, Callable(ZedWeaponPack, &"art"))
@@ -487,7 +487,7 @@ static func flamethrower(t: Dictionary = {}) -> GSWeaponDef:
 
 # --- Thrown ------------------------------------------------------------------------
 #
-# Thrown the way zee's frag is (dot-weapon's thrown behaviour, charged for distance), and
+# Thrown the way zee's frag is (gs-weapon's thrown behaviour, charged for distance), and
 # told apart by their tags. None of them has a fuse except the pipe bomb's, which is the
 # game's: it lands, beeps and draws the horde, then goes off.
 
@@ -603,7 +603,7 @@ static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringNam
 	def.charge_requires_min = false
 	def.deploy_ticks = sec_ticks(0.35)
 	def.holster_ticks = sec_ticks(0.25)
-	# [b]A fuse ten times the longest hold, and no game reads it.[/b] dot-weapon's thrown
+	# [b]A fuse ten times the longest hold, and no game reads it.[/b] gs-weapon's thrown
 	# behaviour treats a fuse used up by the cook as "it went off in the hand" and throws
 	# nothing, so a fuse of zero (which is what a bottle has) is a molotov that never leaves
 	# it. These go off when they land, which is the game's to decide from the tag.
@@ -624,7 +624,7 @@ static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringNam
 	return def
 
 
-# Attachments: the rules are dot-weapon's ([GSWeaponAttachments]); each multiplier names a field of the document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not quiet.
+# Attachments: the rules are gs-weapon's ([GSWeaponAttachments]); each multiplier names a field of the document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not quiet.
 
 
 
@@ -717,7 +717,7 @@ static func validate_models() -> GSResult:
 static func describe_lines(types: Dictionary = {}) -> PackedStringArray:
 	var out := PackedStringArray()
 	var built := weapons(types)
-	out.append("zed-dot-weapons: %d weapons at %d Hz, %s" % [built.size(), TICK_RATE, "installed" if installed() else "not installed"])
+	out.append("zed-gs-weapons: %d weapons at %d Hz, %s" % [built.size(), TICK_RATE, "installed" if installed() else "not installed"])
 
 	for def in built:
 		out.append("  %-18s %-18s slot %d  %s" % [def.id, def.display_name, def.slot, ", ".join(def.tags)])

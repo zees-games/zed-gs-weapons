@@ -1,6 +1,6 @@
 extends "res://examples/selftest/zed_harness.gd"
 
-## zed-dot-weapons' suite: the pack installs into zee-dot-weapons, every weapon validates,
+## zed-gs-weapons' suite: the pack installs into zee-gs-weapons, every weapon validates,
 ## has art that loads and a report of its own, and does what it is for when fired.
 ##
 ## [codeblock]
@@ -21,7 +21,7 @@ const ZEE_COUNT := 27
 
 
 func _ready() -> void:
-	print("zed-dot-weapons self-test")
+	print("zed-gs-weapons self-test")
 	print("=========================")
 
 	_ids()
@@ -67,12 +67,12 @@ func _ids() -> void:
 			clash.append(String(id))
 
 	# zee's ids win a clash, so an id here that zee has would silently never exist.
-	_check("none of them is an id zee-dot-weapons has: %s" % ", ".join(clash), clash.is_empty())
+	_check("none of them is an id zee-gs-weapons has: %s" % ", ".join(clash), clash.is_empty())
 	_end()
 
 
 func _install() -> void:
-	_begin("installing into zee-dot-weapons")
+	_begin("installing into zee-gs-weapons")
 	ZedWeaponPack.install()
 	ZedWeaponPack.install()
 	var table := ZeeWeaponPack.table()
@@ -127,7 +127,7 @@ func _documents() -> void:
 	var shared := GSWeaponSound.check_unique()
 	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
 
-	# Written in 64 Hz ticks like zee's, and saying so: dot-weapon scales a row to the
+	# Written in 64 Hz ticks like zee's, and saying so: gs-weapon scales a row to the
 	# arsenal's rate only when the row names its own, so an unstamped row fires twice as
 	# fast on a 128 Hz server.
 	var stamped := 0
@@ -175,7 +175,7 @@ func _workshop() -> void:
 	_check("every provided id is a ZedWeaponPack weapon whose file loads: %s" % ", ".join(bad), bad.is_empty())
 	_check("no provided id is one zee provides: %s" % ", ".join(clash), clash.is_empty())
 
-	var zee_doc: Variant = JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://").path_join("../zee-dot-weapons/provides.json")))
+	var zee_doc: Variant = JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://").path_join("../zee-gs-weapons/provides.json")))
 	if zee_doc is Dictionary:
 		var zee_ids := {}
 		for e: Dictionary in (zee_doc as Dictionary).get("entries", []):
@@ -191,7 +191,7 @@ func _workshop() -> void:
 	var index := GSContentIndex.new()
 	index.set_session(GSContentIndex.SESSION_SOLO)
 	var added := index.add_pack({
-		"content_id": "gamemann/zed-dot-weapons", "version": "1.0.0", "prefix": "res://",
+		"content_id": "gamemann/zed-gs-weapons", "version": "1.0.0", "prefix": "res://",
 		"session": "solo", "source": "subscription", "provides": provides,
 	})
 	_check("the index takes the pack", added.ok)
@@ -437,7 +437,7 @@ func _reloading() -> void:
 
 
 ## The throwables leave the hand: a charge, a release, and a projectile with somewhere to go.
-## A fuse used up by the cook is dot-weapon's "it went off in the hand", which throws nothing;
+## A fuse used up by the cook is gs-weapon's "it went off in the hand", which throws nothing;
 ## a bottle's fuse of zero was exactly that on the first try.
 func _throwing() -> void:
 	_begin("throwing")
@@ -461,7 +461,7 @@ func _throwing() -> void:
 	_end()
 
 
-## The six attachments: dot-weapon's catalogue takes them, each fits the carbine on its own
+## The six attachments: gs-weapon's catalogue takes them, each fits the carbine on its own
 ## mount, they change the document the way their names say, and each model is on disk, stands
 ## alone, and the carbine's model has the socket it goes on.
 func _attachments() -> void:

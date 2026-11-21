@@ -1,6 +1,6 @@
 extends Node
 
-## Counters, check printing and builders shared by the zed-dot-weapons suite.
+## Counters, check printing and builders shared by the zed-gs-weapons suite.
 
 var _sections_entered: int = 0
 var _sections_finished: int = 0

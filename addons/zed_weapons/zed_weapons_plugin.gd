@@ -1,8 +1,8 @@
 @tool
 extends EditorPlugin
 
-## Editor entry point for zed-dot-weapons. Registers nothing: the pack is documents and a
-## table of filenames, and its weapons are carried by zee-dot-weapons' rig. A game calls
+## Editor entry point for zed-gs-weapons. Registers nothing: the pack is documents and a
+## table of filenames, and its weapons are carried by zee-gs-weapons' rig. A game calls
 ## [method ZedWeaponPack.install] when it loads; there is no autoload to do it for it.
 
 

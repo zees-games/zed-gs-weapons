@@ -4,7 +4,7 @@
 	"origin": "https://content.gamespice.net/content",
 	"packs": [
 		{
-			"id": "gamemann/zed-dot-weapons-hq",
+			"id": "gamemann/zed-gs-weapons-hq",
 			"into": "assets",
 			"kind": "store",
 			"manifest_sha256": "4010740bde57c9d1717e5313e70735bd15139085b1e6e78238e0dab43dff147d",

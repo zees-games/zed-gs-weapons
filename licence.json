@@ -5,8 +5,8 @@
   ],
   "licence": "MIT",
   "author": "zees-games",
-  "url": "https://github.com/zees-games/zed-dot-weapons",
-  "title": "zed-dot-weapons code and original art"
+  "url": "https://github.com/zees-games/zed-gs-weapons",
+  "title": "zed-gs-weapons code and original art"
  },
  {
   "paths": [
@@ -68,7 +68,7 @@
   ],
   "licence": "MIT",
   "author": "zees-games",
-  "url": "https://github.com/zees-games/zed-dot-weapons",
-  "title": "zed-dot-weapons high-detail guns (modelled and procedurally textured in art-src/hq)"
+  "url": "https://github.com/zees-games/zed-gs-weapons",
+  "title": "zed-gs-weapons high-detail guns (modelled and procedurally textured in art-src/hq)"
  }
 ]

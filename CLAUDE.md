@@ -1,6 +1,6 @@
-# zed-dot-weapons
+# zed-gs-weapons
 
-A second weapons pack, on top of zee-dot-weapons. Read `../../CLAUDE.md` and `../zee-dot-weapons/CLAUDE.md` first: everything about how a weapon is drawn, held, heard, replicated and rolled back is zee's, and this repository only adds content to it. Its `origin` is `git@github.com:zees-games/zed-dot-weapons.git`, in Christian's `zees-games` organisation like zee. Built 2026-10-10 for game-zombie-zone, which asked for "a separate addon pack, so the server can carry two weapon packs".
+A second weapons pack, on top of zee-gs-weapons. Read `../../CLAUDE.md` and `../zee-gs-weapons/CLAUDE.md` first: everything about how a weapon is drawn, held, heard, replicated and rolled back is zee's, and this repository only adds content to it. Its `origin` is `git@github.com:zees-games/zed-gs-weapons.git`, in Christian's `zees-games` organisation like zee. Built 2026-10-10 for game-zombie-zone, which asked for "a separate addon pack, so the server can carry two weapon packs".
 
 ## The one idea: content, through zee's seam
 
@@ -8,11 +8,11 @@ A second copy of zee's rig, view model and effects for sixteen more weapons woul
 
 **Install before the first rig is set up.** A rig builds its catalogue once, in `setup()`; one built before `install()` carries zee's weapons for as long as it lives.
 
-**The sources are static methods, not lambdas.** zee keeps them in a static variable that the engine clears after it has freed the scripts at exit, and the first version's lambdas outlived their script: every process that installed the pack aborted on the way out (`double free or corruption`, exit 134) with every check passed. dot-server-deploy's zombiezone_client found it by its exit code; the suite's "exiting" section runs `tools/exit_check.gd` as a second process and fails with a lambda put back.
+**The sources are static methods, not lambdas.** zee keeps them in a static variable that the engine clears after it has freed the scripts at exit, and the first version's lambdas outlived their script: every process that installed the pack aborted on the way out (`double free or corruption`, exit 134) with every check passed. gs-server-deploy's zombiezone_client found it by its exit code; the suite's "exiting" section runs `tools/exit_check.gd` as a second process and fails with a lambda put back.
 
 ## Weapon profiles
 
-`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through dot-weapon's `GSWeaponProfiles` (`overlay_set`, `tune`), only the keys a file sets (`GSProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
+`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through gs-weapon's `GSWeaponProfiles` (`overlay_set`, `tune`), only the keys a file sets (`GSProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
 
 ## The Workshop form
 
@@ -20,13 +20,13 @@ A second copy of zee's rig, view model and effects for sixteen more weapons woul
 
 ## Ticks at 64 Hz, and every row says so
 
-Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `GSWeaponDef.authored_tick_rate` to it, so dot-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-dot-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.
+Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `GSWeaponDef.authored_tick_rate` to it, so gs-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-gs-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.
 
 ## What a throwable does is the game's
 
-dot-weapon spawns nothing; a thrown weapon's use is a `GSWeaponSpawn` handed to the game. The molotov, pipe bomb and bile jar say what they are with tags (`ZedWeaponIds.TAG_MOLOTOV`, `TAG_PIPE_BOMB`, `TAG_BILE`) and the flamethrower with `TAG_INCENDIARY`, so a game that has fire, a lure and bile can do the right thing with a pack it has never heard of. game-zombie-zone's `ZzGame._throw` is the reference.
+gs-weapon spawns nothing; a thrown weapon's use is a `GSWeaponSpawn` handed to the game. The molotov, pipe bomb and bile jar say what they are with tags (`ZedWeaponIds.TAG_MOLOTOV`, `TAG_PIPE_BOMB`, `TAG_BILE`) and the flamethrower with `TAG_INCENDIARY`, so a game that has fire, a lure and bile can do the right thing with a pack it has never heard of. game-zombie-zone's `ZzGame._throw` is the reference.
 
-**A thrown weapon's fuse must outlast the longest hold.** dot-weapon's thrown behaviour reads a fuse used up by the cook as "it went off in the hand" and throws nothing. A bottle has no fuse, and the first molotov, written with `fuse_ticks` 0, never left the hand; it is ten seconds now and no game reads it. The suite's "throwing" section fails with the zero put back.
+**A thrown weapon's fuse must outlast the longest hold.** gs-weapon's thrown behaviour reads a fuse used up by the cook as "it went off in the hand" and throws nothing. A bottle has no fuse, and the first molotov, written with `fuse_ticks` 0, never left the hand; it is ten seconds now and no game reads it. The suite's "throwing" section fails with the zero put back.
 
 ## Three things the renders found, that no check can
 
@@ -56,17 +56,17 @@ The assault carbine (2026-10-20) was the first of a second tier, followed the sa
 
 **Mounts follow the model's sockets** (2026-11-08): the carbine and AK take all five; the SMG and pump shotgun optic, muzzle, underbarrel, side; the pistol optic, muzzle, underbarrel; the hunting rifle (scoped) muzzle, underbarrel, side. None but the two rifles takes the extended magazine (its model is rifle-sized); the silenced pistol and uzi are kitbashes with no sockets and keep none. The selftest checks each mount has its socket and every node an offered attachment hides. zee draws the fitted parts; how each sits on these guns is unrendered.
 
-**Attachments are data here, the rules are dot-weapon's** (`GSWeaponAttachment`, `GSWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
+**Attachments are data here, the rules are gs-weapon's** (`GSWeaponAttachment`, `GSWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
 
 ## Every model stands alone, because a game is delivered as a pack
 
-A game that vendors this art is mounted under `res://dot_cloud/<id>/<version>/`, where a model that names another file by `res://assets/…` loads without it. The Weapon Pack's models use plain material colours and name nothing. The Food Kit's name an external `Textures/colormap.png`, so the bottle and the jar are baked by `tools/bake_food.gd` into `.scn` files that carry the texture inside them (an `ImageTexture` made from the pixels), and the art names those. The suite's "no model leans on another file" asks `ResourceLoader.get_dependencies` of every model; pointed at the raw `.glb` it fails.
+A game that vendors this art is mounted under `res://gs_cloud/<id>/<version>/`, where a model that names another file by `res://assets/…` loads without it. The Weapon Pack's models use plain material colours and name nothing. The Food Kit's name an external `Textures/colormap.png`, so the bottle and the jar are baked by `tools/bake_food.gd` into `.scn` files that carry the texture inside them (an `ImageTexture` made from the pixels), and the art names those. The suite's "no model leans on another file" asks `ResourceLoader.get_dependencies` of every model; pointed at the raw `.glb` it fails.
 
 ## Validating
 
 ```bash
 godot --headless --path . --import
-find . -name '*.gd' -not -path './.godot/*' -not -path './addons/dot_*' -not -path './addons/zee_weapons/*' | while read f; do
+find . -name '*.gd' -not -path './.godot/*' -not -path './addons/gs_*' -not -path './addons/zee_weapons/*' | while read f; do
     godot --headless --path . --check-only --script "res://${f#./}"
 done
 timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # zed_selftest
@@ -81,4 +81,4 @@ Review every change to a gun's hold on the contact sheet (`--sheet`, the same fr
 
 ## Visual quality
 
-A visual change (a weapon model, its animation, arms or effects) is done only when a fresh judge says so: follow dot-game's brief, `../dot-game/docs/visual-judge-brief.md` (GPU capture, never llvmpipe; three consecutive zero-defect passes; `--audit` before you report). Your own reading of the sheets never counts.
+A visual change (a weapon model, its animation, arms or effects) is done only when a fresh judge says so: follow gs-game's brief, `../gs-game/docs/visual-judge-brief.md` (GPU capture, never llvmpipe; three consecutive zero-defect passes; `--audit` before you report). Your own reading of the sheets never counts.

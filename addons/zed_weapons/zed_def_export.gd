@@ -2,7 +2,7 @@ class_name ZedDefExport
 extends RefCounted
 
 ## Writes the pack's weapons as Workshop files: one [GSWeaponDef] `.tres` per weapon and the
-## `provides.json` that lists them. The same form as zee-dot-weapons' [ZeeDefExport], whose
+## `provides.json` that lists them. The same form as zee-gs-weapons' [ZeeDefExport], whose
 ## category table and document builder this reuses so the two packs cannot describe a slot
 ## differently.
 ##
