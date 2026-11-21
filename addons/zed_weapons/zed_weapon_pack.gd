@@ -88,10 +88,10 @@ const SOUNDS := {
 # --- The documents ---------------------------------------------------------------
 
 ## [param profiled] false skips the cfg profiles (the Workshop export writes the builders' own numbers).
-static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[DotWeaponDef]:
+static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[GSWeaponDef]:
 	var t := types if not types.is_empty() else ZeeWeaponDamage.table()
 
-	var out: Array[DotWeaponDef] = [
+	var out: Array[GSWeaponDef] = [
 		service_pistol(t), silenced_pistol(t), uzi(t),
 		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t), assault_carbine(t), ak_rifle(t),
 		machine_gun(t), grenade_launcher(t), rocket_launcher(t), flamethrower(t),
@@ -102,7 +102,7 @@ static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[DotW
 		def.weight = float(WEIGHTS.get(def.id, def.weight))
 
 	if profiled:
-		errors = DotWeaponProfiles.tune(out, profile_set())
+		errors = GSWeaponProfiles.tune(out, profile_set())
 
 	return out
 
@@ -113,30 +113,30 @@ const WEIGHTS := {
 	&"hunting_rifle": 5.0, &"assault_carbine": 4.0, &"machine_gun": 6.0, &"grenade_launcher": 6.0,
 	&"rocket_launcher": 6.0, &"flamethrower": 6.0, &"molotov": 0.4, &"pipe_bomb": 0.4, &"bile_jar": 0.4,
 }
-## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [DotWeaponProfiles].
+## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [GSWeaponProfiles].
 const ADDON := "zed_weapons"
 ## The game id for the game tier (`cfg/game/<game>/weapon`); empty skips it.
 static var game: String = ""
-## A mounted pack's `cfg` root (`DotCloudMounter.cfg_root_of`), the weakest root.
+## A mounted pack's `cfg` root (`GSCloudMounter.cfg_root_of`), the weakest root.
 static var pack_cfg_root: String = ""
-## Roots under [member pack_cfg_root]; empty means [method DotProfileSet.default_roots]. Tests set it.
+## Roots under [member pack_cfg_root]; empty means [method GSProfileSet.default_roots]. Tests set it.
 static var base_roots: PackedStringArray = PackedStringArray()
 ## Profiles that failed to load in the last [method weapons]; their weapons keep the builder's numbers.
 static var errors: PackedStringArray = PackedStringArray()
 
 
-## The weapon profile set; call [method DotProfileSet.clear_cache] when done.
-static func profile_set(layer: Variant = null) -> DotProfileSet:
-	return DotWeaponProfiles.overlay_set(ADDON, game, pack_cfg_root, base_roots, layer)
+## The weapon profile set; call [method GSProfileSet.clear_cache] when done.
+static func profile_set(layer: Variant = null) -> GSProfileSet:
+	return GSWeaponProfiles.overlay_set(ADDON, game, pack_cfg_root, base_roots, layer)
 
 
 ## Weapon [param id] with the upgrades [param ids] applied; value `{def, cost}`.
-static func upgraded(id: StringName, ids: Array, types: Dictionary = {}) -> DotResult:
-	var def: DotWeaponDef = table(types).get(id)
+static func upgraded(id: StringName, ids: Array, types: Dictionary = {}) -> GSResult:
+	var def: GSWeaponDef = table(types).get(id)
 	if def == null:
-		return DotResult.fail(DotError.CODE_INVALID, "no weapon %s" % id)
+		return GSResult.fail(GSError.CODE_INVALID, "no weapon %s" % id)
 	var set := profile_set()
-	var res := DotWeaponProfiles.upgraded(def, ids, set)
+	var res := GSWeaponProfiles.upgraded(def, ids, set)
 	set.clear_cache()
 	return res
 
@@ -153,9 +153,9 @@ static func table(types: Dictionary = {}) -> Dictionary:
 # --- Sidearms ----------------------------------------------------------------------
 
 ## The plain one: what a survivor is handed when there is nothing else.
-static func service_pistol(t: Dictionary = {}) -> DotWeaponDef:
+static func service_pistol(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.SERVICE_PISTOL, "Service Pistol", ZeeWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(400.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(400.0))
 	def.tags = [ZeeWeaponIds.TAG_SIDEARM]
 	def.ammo_type = ZeeWeaponIds.AMMO_LIGHT
 	def.magazine = 15
@@ -165,7 +165,7 @@ static func service_pistol(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.25)
 	def.holster_ticks = sec_ticks(0.18)
 
-	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL]
+	def.mounts = [GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE, GSWeaponAttachment.MOUNT_UNDERBARREL]
 
 	var b := _ballistics(t, 28.0)
 	flight(b, 380, 0.0009, 25, 0.6, 0.15, 0, 0.008)
@@ -180,21 +180,21 @@ static func service_pistol(t: Dictionary = {}) -> DotWeaponDef:
 
 
 ## Quieter and a little weaker: a shot that does not wake the room.
-static func silenced_pistol(t: Dictionary = {}) -> DotWeaponDef:
+static func silenced_pistol(t: Dictionary = {}) -> GSWeaponDef:
 	var def := service_pistol(t)
 	def.id = ZedWeaponIds.SILENCED_PISTOL
 	def.display_name = "Silenced Pistol"
 	def.tags = [ZeeWeaponIds.TAG_SIDEARM, ZeeWeaponIds.TAG_SILENCED]
 	def.magazine = 12
-	(def.tuning as DotWeaponBallistics).damage = 24.0
+	(def.tuning as GSWeaponBallistics).damage = 24.0
 	def.mounts.clear()  # its model is the kitbash, which has no sockets
 	return def
 
 
 ## Automatic in one hand: a sidearm that empties itself.
-static func uzi(t: Dictionary = {}) -> DotWeaponDef:
+static func uzi(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.UZI, "Uzi", ZeeWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(900.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(900.0))
 	def.tags = [ZeeWeaponIds.TAG_SIDEARM, ZeeWeaponIds.TAG_AUTOMATIC]
 	def.ammo_type = ZeeWeaponIds.AMMO_LIGHT
 	def.magazine = 32
@@ -219,9 +219,9 @@ static func uzi(t: Dictionary = {}) -> DotWeaponDef:
 
 # --- Primaries ---------------------------------------------------------------------
 
-static func tactical_smg(t: Dictionary = {}) -> DotWeaponDef:
+static func tactical_smg(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.TACTICAL_SMG, "Tactical SMG", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(850.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(850.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_AUTOMATIC, ZeeWeaponIds.TAG_SILENCED]
 	def.ammo_type = ZeeWeaponIds.AMMO_LIGHT
 	def.magazine = 50
@@ -231,7 +231,7 @@ static func tactical_smg(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.32)
 	def.holster_ticks = sec_ticks(0.22)
 
-	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
+	def.mounts = [GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE, GSWeaponAttachment.MOUNT_UNDERBARREL, GSWeaponAttachment.MOUNT_SIDE]
 
 	var b := _ballistics(t, 19.0)
 	flight(b, 400, 0.0008, 20, 0.5, 0.15, 5, 0.006)
@@ -247,9 +247,9 @@ static func tactical_smg(t: Dictionary = {}) -> DotWeaponDef:
 
 
 ## Eight shells, one at a time: the answer to a crowd in a doorway.
-static func pump_shotgun(t: Dictionary = {}) -> DotWeaponDef:
+static func pump_shotgun(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.PUMP_SHOTGUN, "Pump Shotgun", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(70.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(70.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY]
 	def.ammo_type = ZeeWeaponIds.AMMO_SHELL
 	def.magazine = 8
@@ -259,7 +259,7 @@ static func pump_shotgun(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.4)
 	def.holster_ticks = sec_ticks(0.28)
 
-	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
+	def.mounts = [GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE, GSWeaponAttachment.MOUNT_UNDERBARREL, GSWeaponAttachment.MOUNT_SIDE]
 
 	var b := _ballistics(t, 14.0)
 	flight(b, 400, 0.003, 8, 0.2, 0.05, 0, 0.004)
@@ -275,9 +275,9 @@ static func pump_shotgun(t: Dictionary = {}) -> DotWeaponDef:
 
 ## Two barrels, both at once if you are quick: the most damage in the pack inside three
 ## metres and almost none at fifteen.
-static func sawed_off(t: Dictionary = {}) -> DotWeaponDef:
+static func sawed_off(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.SAWED_OFF, "Sawed-Off", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(240.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(240.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY]
 	def.ammo_type = ZeeWeaponIds.AMMO_SHELL
 	def.magazine = 2
@@ -300,9 +300,9 @@ static func sawed_off(t: Dictionary = {}) -> DotWeaponDef:
 
 
 ## Bolt action, scoped, and a primary: a sniper that leaves the heavy slot free.
-static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
+static func hunting_rifle(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.HUNTING_RIFLE, "Hunting Rifle", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(60.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(60.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_SCOPED]
 	def.ammo_type = ZeeWeaponIds.AMMO_HEAVY
 	def.magazine = 5
@@ -312,7 +312,7 @@ static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.5)
 	def.holster_ticks = sec_ticks(0.35)
 
-	def.mounts = [DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
+	def.mounts = [GSWeaponAttachment.MOUNT_MUZZLE, GSWeaponAttachment.MOUNT_UNDERBARREL, GSWeaponAttachment.MOUNT_SIDE]
 
 	var b := _ballistics(t, 90.0)
 	flight(b, 880, 0.0003, 100, 0.75, 0.8, 0, 0.0095)
@@ -328,9 +328,9 @@ static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
 
 ## The high-detail one: a 30-round carbine with a mount for every attachment
 ## ([method attachments]). Its model is baked (assets/hq/, art-src/hq/), not kitbashed.
-static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
+static func assault_carbine(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.ASSAULT_CARBINE, "Assault Carbine", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(750.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(750.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_AUTOMATIC]
 	def.ammo_type = ZeeWeaponIds.AMMO_HEAVY
 	def.magazine = 30
@@ -340,9 +340,9 @@ static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.4)
 	def.holster_ticks = sec_ticks(0.25)
 	def.mounts = [
-		DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE,
-		DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE,
-		DotWeaponAttachment.MOUNT_MAGAZINE,
+		GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE,
+		GSWeaponAttachment.MOUNT_UNDERBARREL, GSWeaponAttachment.MOUNT_SIDE,
+		GSWeaponAttachment.MOUNT_MAGAZINE,
 	]
 
 	var b := _ballistics(t, 26.0)
@@ -360,9 +360,9 @@ static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
 
 ## The second high-detail rifle: a 30-round 7.62 mm with wood furniture, hitting harder and
 ## kicking more than the carbine, and slower. Same five mounts.
-static func ak_rifle(t: Dictionary = {}) -> DotWeaponDef:
+static func ak_rifle(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.AK_RIFLE, "AK Rifle", ZeeWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(600.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(600.0))
 	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_AUTOMATIC]
 	def.ammo_type = ZeeWeaponIds.AMMO_HEAVY
 	def.magazine = 30
@@ -372,9 +372,9 @@ static func ak_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.45)
 	def.holster_ticks = sec_ticks(0.3)
 	def.mounts = [
-		DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE,
-		DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE,
-		DotWeaponAttachment.MOUNT_MAGAZINE,
+		GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE,
+		GSWeaponAttachment.MOUNT_UNDERBARREL, GSWeaponAttachment.MOUNT_SIDE,
+		GSWeaponAttachment.MOUNT_MAGAZINE,
 	]
 
 	var b := _ballistics(t, 32.0)
@@ -393,9 +393,9 @@ static func ak_rifle(t: Dictionary = {}) -> DotWeaponDef:
 # --- Heavies ------------------------------------------------------------------------
 
 ## A hundred-round box and a long reload: what you carry when the horde is the plan.
-static func machine_gun(t: Dictionary = {}) -> DotWeaponDef:
+static func machine_gun(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.MACHINE_GUN, "Machine Gun", ZeeWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(750.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(750.0))
 	def.tags = [ZeeWeaponIds.TAG_HEAVY, ZeeWeaponIds.TAG_AUTOMATIC, ZeeWeaponIds.TAG_PRIMARY]
 	def.ammo_type = ZeeWeaponIds.AMMO_BELT
 	def.magazine = 100
@@ -420,9 +420,9 @@ static func machine_gun(t: Dictionary = {}) -> DotWeaponDef:
 
 
 ## One shell, lobbed, and it goes off on whatever it meets.
-static func grenade_launcher(t: Dictionary = {}) -> DotWeaponDef:
+static func grenade_launcher(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.GRENADE_LAUNCHER, "Grenade Launcher", ZeeWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(60.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(60.0))
 	def.behaviour_path = PROJECTILE
 	def.tags = [ZeeWeaponIds.TAG_HEAVY, ZeeWeaponIds.TAG_EXPLOSIVE]
 	def.ammo_type = ZeeWeaponIds.AMMO_ORDNANCE
@@ -440,9 +440,9 @@ static func grenade_launcher(t: Dictionary = {}) -> DotWeaponDef:
 
 
 ## Straight and slow to reload: one big hole in whatever is in front of you.
-static func rocket_launcher(t: Dictionary = {}) -> DotWeaponDef:
+static func rocket_launcher(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.ROCKET_LAUNCHER, "Rocket Launcher", ZeeWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.SEMI, rpm_ticks(40.0))
+		GSWeaponDef.Fire.SEMI, rpm_ticks(40.0))
 	def.behaviour_path = PROJECTILE
 	def.tags = [ZeeWeaponIds.TAG_HEAVY, ZeeWeaponIds.TAG_EXPLOSIVE]
 	def.ammo_type = ZeeWeaponIds.AMMO_ORDNANCE
@@ -461,9 +461,9 @@ static func rocket_launcher(t: Dictionary = {}) -> DotWeaponDef:
 
 ## Short, wide and burning: everything it touches is alight, which in a game with fire is
 ## most of the damage.
-static func flamethrower(t: Dictionary = {}) -> DotWeaponDef:
+static func flamethrower(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _gun(ZedWeaponIds.FLAMETHROWER, "Flamethrower", ZeeWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.AUTO, rpm_ticks(600.0))
+		GSWeaponDef.Fire.AUTO, rpm_ticks(600.0))
 	def.tags = [ZeeWeaponIds.TAG_HEAVY, ZeeWeaponIds.TAG_AUTOMATIC, ZedWeaponIds.TAG_INCENDIARY]
 	def.ammo_type = ZedWeaponIds.AMMO_FUEL
 	# A tank, not a magazine: it runs dry and that is that.
@@ -491,20 +491,20 @@ static func flamethrower(t: Dictionary = {}) -> DotWeaponDef:
 # told apart by their tags. None of them has a fuse except the pipe bomb's, which is the
 # game's: it lands, beeps and draws the horde, then goes off.
 
-static func molotov(t: Dictionary = {}) -> DotWeaponDef:
+static func molotov(t: Dictionary = {}) -> GSWeaponDef:
 	return _thrown(t, ZedWeaponIds.MOLOTOV, "Molotov", ZedWeaponIds.AMMO_MOLOTOV, ZedWeaponIds.TAG_MOLOTOV)
 
 
-static func pipe_bomb(t: Dictionary = {}) -> DotWeaponDef:
+static func pipe_bomb(t: Dictionary = {}) -> GSWeaponDef:
 	var def := _thrown(t, ZedWeaponIds.PIPE_BOMB, "Pipe Bomb", ZedWeaponIds.AMMO_PIPE_BOMB, ZedWeaponIds.TAG_PIPE_BOMB)
 	def.tags.append(ZeeWeaponIds.TAG_EXPLOSIVE)
-	var b := def.tuning as DotWeaponBallistics
+	var b := def.tuning as GSWeaponBallistics
 	b.splash_radius = 6.0
 	b.splash_damage = 300.0
 	return def
 
 
-static func bile_jar(t: Dictionary = {}) -> DotWeaponDef:
+static func bile_jar(t: Dictionary = {}) -> GSWeaponDef:
 	return _thrown(t, ZedWeaponIds.BILE_JAR, "Bile Jar", ZedWeaponIds.AMMO_BILE, ZedWeaponIds.TAG_BILE)
 
 
@@ -517,8 +517,8 @@ const SELECTABLE := {
 
 # --- Builders ------------------------------------------------------------------------
 
-static func _gun(id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire, interval: int) -> DotWeaponDef:
-	var def := DotWeaponDef.new()
+static func _gun(id: StringName, name: String, slot: int, fire: GSWeaponDef.Fire, interval: int) -> GSWeaponDef:
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
@@ -538,8 +538,8 @@ static func _gun(id: StringName, name: String, slot: int, fire: DotWeaponDef.Fir
 	return def
 
 
-static func _ballistics(t: Dictionary, damage: float, type: StringName = ZeeWeaponIds.DAMAGE_DART) -> DotWeaponBallistics:
-	var b := DotWeaponBallistics.new()
+static func _ballistics(t: Dictionary, damage: float, type: StringName = ZeeWeaponIds.DAMAGE_DART) -> GSWeaponBallistics:
+	var b := GSWeaponBallistics.new()
 	b.damage = damage
 	b.damage_type = ZeeWeaponDamage.from(t if not t.is_empty() else ZeeWeaponDamage.table(), type)
 	return b
@@ -549,7 +549,7 @@ static func _ballistics(t: Dictionary, damage: float, type: StringName = ZeeWeap
 ## floor, penetration (m of soft material), tracer interval and bullet mass (kg). A game that
 ## leaves sv_ballistics off still sees hitscan; this only fills the profile fields.
 static func flight(
-	b: DotWeaponBallistics, velocity: float, drag: float, falloff_start: float,
+	b: GSWeaponBallistics, velocity: float, drag: float, falloff_start: float,
 	falloff_min: float, penetration: float, tracer: int, mass: float
 ) -> void:
 	b.muzzle_velocity = velocity
@@ -562,7 +562,7 @@ static func flight(
 
 
 ## A shell that flies at [param speed] under [param gravity] and goes off on contact.
-static func _explosive(t: Dictionary, direct: float, speed: float, gravity: float, radius: float, splash: float) -> DotWeaponBallistics:
+static func _explosive(t: Dictionary, direct: float, speed: float, gravity: float, radius: float, splash: float) -> GSWeaponBallistics:
 	var b := _ballistics(t, direct, ZeeWeaponIds.DAMAGE_BLAST)
 	b.splash_type = ZeeWeaponDamage.from(t if not t.is_empty() else ZeeWeaponDamage.table(), ZeeWeaponIds.DAMAGE_BLAST)
 	b.speed = speed
@@ -581,14 +581,14 @@ static func _explosive(t: Dictionary, direct: float, speed: float, gravity: floa
 	return b
 
 
-static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringName, tag: StringName) -> DotWeaponDef:
-	var def := DotWeaponDef.new()
+static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringName, tag: StringName) -> GSWeaponDef:
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
 	def.behaviour_path = THROWN
 	def.slot = ZeeWeaponIds.SLOT_THROWN
-	def.fire_mode = DotWeaponDef.Fire.CHARGE
+	def.fire_mode = GSWeaponDef.Fire.CHARGE
 	def.use_interval_ticks = sec_ticks(1.0)
 	def.tags = [ZeeWeaponIds.TAG_THROWN, tag]
 	def.ammo_type = pool
@@ -624,7 +624,7 @@ static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringNam
 	return def
 
 
-# Attachments: the rules are dot-weapon's ([DotWeaponAttachments]); each multiplier names a field of the document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not quiet.
+# Attachments: the rules are dot-weapon's ([GSWeaponAttachments]); each multiplier names a field of the document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not quiet.
 
 
 
@@ -633,26 +633,26 @@ static func art() -> Array[ZeeWeaponArt]:
 	return art_entries()
 
 
-static func attachment_defs() -> Array[DotWeaponAttachment]:
+static func attachment_defs() -> Array[GSWeaponAttachment]:
 	return [
-		_attachment(ZedWeaponIds.RED_DOT, "Red Dot", DotWeaponAttachment.MOUNT_OPTIC,
+		_attachment(ZedWeaponIds.RED_DOT, "Red Dot", GSWeaponAttachment.MOUNT_OPTIC,
 			{}, {}, [], {&"aim_zoom": 0.8}),
-		_attachment(ZedWeaponIds.SCOPE_4X, "4x Scope", DotWeaponAttachment.MOUNT_OPTIC,
+		_attachment(ZedWeaponIds.SCOPE_4X, "4x Scope", GSWeaponAttachment.MOUNT_OPTIC,
 			{"spread": 0.85}, {}, [ZeeWeaponIds.TAG_SCOPED], {&"aim_zoom": 0.4}),
-		_attachment(ZedWeaponIds.SUPPRESSOR, "Suppressor", DotWeaponAttachment.MOUNT_MUZZLE,
+		_attachment(ZedWeaponIds.SUPPRESSOR, "Suppressor", GSWeaponAttachment.MOUNT_MUZZLE,
 			{"recoil_pitch": 0.9, "max_range": 0.9}, {}, [ZeeWeaponIds.TAG_SILENCED]),
-		_attachment(ZedWeaponIds.FOREGRIP, "Foregrip", DotWeaponAttachment.MOUNT_UNDERBARREL,
+		_attachment(ZedWeaponIds.FOREGRIP, "Foregrip", GSWeaponAttachment.MOUNT_UNDERBARREL,
 			{"recoil_pitch": 0.8, "spread_moving": 0.9}),
-		_attachment(ZedWeaponIds.LASER_SIGHT, "Laser Sight", DotWeaponAttachment.MOUNT_SIDE,
+		_attachment(ZedWeaponIds.LASER_SIGHT, "Laser Sight", GSWeaponAttachment.MOUNT_SIDE,
 			{"spread": 0.8}),
-		_attachment(ZedWeaponIds.EXTENDED_MAG, "Extended Magazine", DotWeaponAttachment.MOUNT_MAGAZINE,
+		_attachment(ZedWeaponIds.EXTENDED_MAG, "Extended Magazine", GSWeaponAttachment.MOUNT_MAGAZINE,
 			{"reload_ticks": 1.1}, {"magazine": 10}),
 	]
 
 
 ## The six in one catalogue, ready for an arsenal's `attachments`.
-static func attachments() -> DotWeaponAttachments:
-	var out := DotWeaponAttachments.new()
+static func attachments() -> GSWeaponAttachments:
+	var out := GSWeaponAttachments.new()
 	for att in attachment_defs():
 		var _added := out.add(att)
 	return out
@@ -688,8 +688,8 @@ static func attachment_art(id: StringName) -> Dictionary:
 
 
 static func _attachment(id: StringName, name: String, mount: StringName, scale: Dictionary = {},
-		add: Dictionary = {}, tags: Array[StringName] = [], params: Dictionary = {}) -> DotWeaponAttachment:
-	var att := DotWeaponAttachment.new()
+		add: Dictionary = {}, tags: Array[StringName] = [], params: Dictionary = {}) -> GSWeaponAttachment:
+	var att := GSWeaponAttachment.new()
 	att.id = id
 	att.display_name = name
 	att.mount = mount
@@ -701,7 +701,7 @@ static func _attachment(id: StringName, name: String, mount: StringName, scale: 
 
 
 ## Every art entry's models exist. Loads nothing; asks the resource loader.
-static func validate_models() -> DotResult:
+static func validate_models() -> GSResult:
 	var missing := PackedStringArray()
 
 	for entry in art():
@@ -709,9 +709,9 @@ static func validate_models() -> DotResult:
 			missing.append("%s: %s" % [entry.id, entry.model_path])
 
 	if missing.is_empty():
-		return DotResult.success(null)
+		return GSResult.success(null)
 
-	return DotResult.fail(DotError.CODE_IO, "%d model(s) are missing: %s" % [missing.size(), ", ".join(missing)])
+	return GSResult.fail(GSError.CODE_IO, "%d model(s) are missing: %s" % [missing.size(), ", ".join(missing)])
 
 
 static func describe_lines(types: Dictionary = {}) -> PackedStringArray:

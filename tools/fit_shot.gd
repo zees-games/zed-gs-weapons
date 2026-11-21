@@ -18,7 +18,7 @@ func _ready() -> void:
 		elif args[i] == "--out" and i + 1 < args.size():
 			out = args[i + 1]
 
-	var fitting := DotWeaponFitting.make(ZedWeaponIds.ASSAULT_CARBINE)
+	var fitting := GSWeaponFitting.make(ZedWeaponIds.ASSAULT_CARBINE)
 	var catalogue := ZedWeaponPack.attachments()
 	for id in ids:
 		fitting.fit(catalogue.get_attachment(StringName(id)).mount, StringName(id))

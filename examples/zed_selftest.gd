@@ -111,20 +111,20 @@ func _documents() -> void:
 	_check("and sits in the slot its tier says", slots_ok)
 
 	var t := ZedWeaponPack.table()
-	_check("the molotov says it is one", (t[ZedWeaponIds.MOLOTOV] as DotWeaponDef).tags.has(ZedWeaponIds.TAG_MOLOTOV))
+	_check("the molotov says it is one", (t[ZedWeaponIds.MOLOTOV] as GSWeaponDef).tags.has(ZedWeaponIds.TAG_MOLOTOV))
 	_check("the pipe bomb, the bile jar and the flamethrower too",
-		(t[ZedWeaponIds.PIPE_BOMB] as DotWeaponDef).tags.has(ZedWeaponIds.TAG_PIPE_BOMB)
-		and (t[ZedWeaponIds.BILE_JAR] as DotWeaponDef).tags.has(ZedWeaponIds.TAG_BILE)
-		and (t[ZedWeaponIds.FLAMETHROWER] as DotWeaponDef).tags.has(ZedWeaponIds.TAG_INCENDIARY))
+		(t[ZedWeaponIds.PIPE_BOMB] as GSWeaponDef).tags.has(ZedWeaponIds.TAG_PIPE_BOMB)
+		and (t[ZedWeaponIds.BILE_JAR] as GSWeaponDef).tags.has(ZedWeaponIds.TAG_BILE)
+		and (t[ZedWeaponIds.FLAMETHROWER] as GSWeaponDef).tags.has(ZedWeaponIds.TAG_INCENDIARY))
 
 	var classes := 0
 	for id in ZedWeaponPack.SOUNDS:
-		if ZeeWeaponSound.class_for(id, DotWeaponOutcome.KIND_SHOT) == ZedWeaponPack.SOUNDS[id] and ZeeWeaponSound.RECIPES.has(ZedWeaponPack.SOUNDS[id]):
+		if ZeeWeaponSound.class_for(id, GSWeaponOutcome.KIND_SHOT) == ZedWeaponPack.SOUNDS[id] and ZeeWeaponSound.RECIPES.has(ZedWeaponPack.SOUNDS[id]):
 			classes += 1
 	_check("every gun sounds like a class zee can bake", classes == ZedWeaponPack.SOUNDS.size())
-	var sound_problems := DotWeaponSound.check_classes(ZedWeaponPack.SOUNDS)
+	var sound_problems := GSWeaponSound.check_classes(ZedWeaponPack.SOUNDS)
 	_check("every gun's class has fire, reload and dry files of a fitting length: %s" % "; ".join(sound_problems), sound_problems.is_empty())
-	var shared := DotWeaponSound.check_unique()
+	var shared := GSWeaponSound.check_unique()
 	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
 
 	# Written in 64 Hz ticks like zee's, and saying so: dot-weapon scales a row to the
@@ -163,8 +163,8 @@ func _workshop() -> void:
 	var clash: Array[String] = []
 	for e: Dictionary in entries:
 		var id := StringName(e["id"])
-		var def: DotWeaponDef = by_id.get(id, null)
-		var loaded := load("res://" + String(e["def"])) as DotWeaponDef
+		var def: GSWeaponDef = by_id.get(id, null)
+		var loaded := load("res://" + String(e["def"])) as GSWeaponDef
 		if def == null or loaded == null or loaded.id != id or loaded.slot != def.slot \
 				or e.get("category", "") != ZeeDefExport.category_for(def.slot) \
 				or not (e.get("meta", {}) as Dictionary).has("asset_root"):
@@ -188,14 +188,14 @@ func _workshop() -> void:
 	else:
 		_check("zee's provides.json is not beside this checkout (skipped)", true)
 
-	var index := DotContentIndex.new()
-	index.set_session(DotContentIndex.SESSION_SOLO)
+	var index := GSContentIndex.new()
+	index.set_session(GSContentIndex.SESSION_SOLO)
 	var added := index.add_pack({
 		"content_id": "gamemann/zed-dot-weapons", "version": "1.0.0", "prefix": "res://",
 		"session": "solo", "source": "subscription", "provides": provides,
 	})
 	_check("the index takes the pack", added.ok)
-	var cat := DotWeaponCatalogue.new().follow_content(index)
+	var cat := GSWeaponCatalogue.new().follow_content(index)
 	var listed := 0
 	for def in code:
 		if cat.has(def.id) and cat.listing(def.id) != null:
@@ -338,7 +338,7 @@ func _firing() -> void:
 	var spent: Array[String] = []
 
 	for id in ZedWeaponIds.all():
-		var def: DotWeaponDef = ZedWeaponPack.table()[id]
+		var def: GSWeaponDef = ZedWeaponPack.table()[id]
 
 		if def.tags.has(ZeeWeaponIds.TAG_THROWN):
 			continue
@@ -346,10 +346,10 @@ func _firing() -> void:
 		var arsenal := _arsenal()
 		var _given := arsenal.give(id)
 		_run(arsenal, 0, 80, 0)
-		var outcomes := _run(arsenal, 80, 160, DotWeaponCommand.BUTTON_ATTACK)
+		var outcomes := _run(arsenal, 80, 160, GSWeaponCommand.BUTTON_ATTACK)
 		var out := 0
 
-		for o: DotWeaponOutcome in outcomes:
+		for o: GSWeaponOutcome in outcomes:
 			out += o.shots.size() + o.spawns.size()
 
 		if out == 0:
@@ -369,8 +369,8 @@ func _firing() -> void:
 	var launcher := _arsenal()
 	var _l := launcher.give(ZedWeaponIds.ROCKET_LAUNCHER)
 	_run(launcher, 0, 80, 0)
-	var rocket: DotWeaponSpawn = null
-	for o: DotWeaponOutcome in _run(launcher, 80, 120, DotWeaponCommand.BUTTON_ATTACK):
+	var rocket: GSWeaponSpawn = null
+	for o: GSWeaponOutcome in _run(launcher, 80, 120, GSWeaponCommand.BUTTON_ATTACK):
 		if not o.spawns.is_empty():
 			rocket = o.spawns[0]
 	_check("a rocket flies straight", rocket != null and is_zero_approx(rocket.gravity_scale) and rocket.splash_damage > 200.0)
@@ -392,7 +392,7 @@ func _reloading() -> void:
 		arts[art.id] = art
 
 	for id in ZedWeaponIds.all():
-		var def: DotWeaponDef = ZedWeaponPack.table()[id]
+		var def: GSWeaponDef = ZedWeaponPack.table()[id]
 
 		if def.tags.has(ZeeWeaponIds.TAG_THROWN) or def.magazine <= 0 or def.reload_ticks <= 0:
 			continue
@@ -414,13 +414,13 @@ func _reloading() -> void:
 		var arsenal := _arsenal()
 		var _given := arsenal.give(id)
 		_run(arsenal, 0, 80, 0)
-		var _shot := _run(arsenal, 80, 84, DotWeaponCommand.BUTTON_ATTACK)
+		var _shot := _run(arsenal, 80, 84, GSWeaponCommand.BUTTON_ATTACK)
 		_run(arsenal, 84, 160, 0)
 		var space := arsenal.current().magazine_space()
 		var want := def.reload_ticks
 		if def.reload_per_round:
 			want = def.reload_start_ticks + def.reload_ticks * maxi(space, 1)
-		_run(arsenal, 160, 161, DotWeaponCommand.BUTTON_RELOAD)
+		_run(arsenal, 160, 161, GSWeaponCommand.BUTTON_RELOAD)
 		var took := 0
 		while arsenal.is_reloading() and took < 2000:
 			_run(arsenal, 161 + took, 162 + took, 0)
@@ -447,9 +447,9 @@ func _throwing() -> void:
 		var _given := arsenal.give(id)
 		_run(arsenal, 0, 60, 0)
 		# Held, then let go, in one run: a release is an edge against the previous command.
-		var thrown: DotWeaponSpawn = null
+		var thrown: GSWeaponSpawn = null
 
-		for o: DotWeaponOutcome in _run(arsenal, 60, 110, DotWeaponCommand.BUTTON_ATTACK, 100):
+		for o: GSWeaponOutcome in _run(arsenal, 60, 110, GSWeaponCommand.BUTTON_ATTACK, 100):
 			if not o.spawns.is_empty():
 				thrown = o.spawns[0]
 
@@ -477,12 +477,12 @@ func _attachments() -> void:
 	var choices := cat.choices_for(carbine)
 	_check("the carbine takes something on each of its five mounts (%s)" % str(choices.keys()), choices.size() == 5)
 
-	var fitting := DotWeaponFitting.make(carbine.id)
-	fitting.fit(DotWeaponAttachment.MOUNT_MAGAZINE, ZedWeaponIds.EXTENDED_MAG)
-	fitting.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
-	fitting.fit(DotWeaponAttachment.MOUNT_UNDERBARREL, ZedWeaponIds.FOREGRIP)
+	var fitting := GSWeaponFitting.make(carbine.id)
+	fitting.fit(GSWeaponAttachment.MOUNT_MAGAZINE, ZedWeaponIds.EXTENDED_MAG)
+	fitting.fit(GSWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	fitting.fit(GSWeaponAttachment.MOUNT_UNDERBARREL, ZedWeaponIds.FOREGRIP)
 	var applied := cat.apply(carbine, fitting)
-	var fitted: DotWeaponDef = applied.value if applied.ok else null
+	var fitted: GSWeaponDef = applied.value if applied.ok else null
 	_check("a full fitting applies (%s)" % ("" if applied.ok else applied.error.message), fitted != null)
 	_check("an extended magazine holds ten more, and the catalogue's copy is untouched",
 		fitted != null and fitted.magazine == 40 and carbine.magazine == 30)
@@ -525,7 +525,7 @@ func _attachments() -> void:
 		defs[d.id] = d
 	for id: StringName in [ZedWeaponIds.AK_RIFLE, ZedWeaponIds.SERVICE_PISTOL, ZedWeaponIds.TACTICAL_SMG,
 			ZedWeaponIds.PUMP_SHOTGUN, ZedWeaponIds.HUNTING_RIFLE]:
-		var def: DotWeaponDef = defs.get(id)
+		var def: GSWeaponDef = defs.get(id)
 		if def == null or def.mounts.is_empty():
 			others.append("%s has no mounts" % id)
 			continue
@@ -561,9 +561,9 @@ func _drawing() -> void:
 	_check("an attachment's art comes from zed's hook", ZeeAttachmentArt.of(ZedWeaponIds.SUPPRESSOR).get("path", "") == ZedWeaponPack.ATTACHMENT_ART[ZedWeaponIds.SUPPRESSOR].path
 		and ZeeAttachmentArt.of(&"no_such_attachment").is_empty())
 
-	var dot := DotWeaponFitting.make(id)
-	dot.fit(DotWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.RED_DOT)
-	dot.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	var dot := GSWeaponFitting.make(id)
+	dot.fit(GSWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.RED_DOT)
+	dot.fit(GSWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
 	view.equip(art)
 	world.equip(art)
 	var plain := world.muzzle_transform().origin
@@ -592,8 +592,8 @@ func _drawing() -> void:
 	_check("aimed with a red dot, the sight line runs through its glass (%.4f, %.4f)" % [through.x, through.y],
 		not points.is_empty() and absf(through.x) < 0.01 and absf(through.y) < 0.01 and not view.is_scoped())
 
-	var scope := DotWeaponFitting.make(id)
-	scope.fit(DotWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.SCOPE_4X)
+	var scope := GSWeaponFitting.make(id)
+	scope.fit(GSWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.SCOPE_4X)
 	view.set_fitting(scope)
 	for i in 120:
 		view.advance(1.0 / 60.0)
@@ -613,10 +613,10 @@ func _suppressed_reach() -> void:
 	_begin("a suppressor's reach")
 	var id := ZedWeaponIds.ASSAULT_CARBINE
 	var art := ZeeWeaponArtTable.get_art(id)
-	var fitted := DotWeaponFitting.make(id)
-	fitted.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	var fitted := GSWeaponFitting.make(id)
+	fitted.fit(GSWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
 	var dress := preload("res://addons/zee_weapons/view/zee_attachment_dress.gd")
-	var bare: float = dress.muzzle_reach(art, DotWeaponFitting.make(id))
+	var bare: float = dress.muzzle_reach(art, GSWeaponFitting.make(id))
 	var reach: float = dress.muzzle_reach(art, fitted)
 	_check("a suppressor has a reach, a bare gun none (%.3f vs %.3f)" % [reach, bare], reach > 0.0 and reach > bare)
 	var plain_len := art.hip_muzzle().length()
@@ -632,7 +632,7 @@ func _suppressed_reach() -> void:
 	rig.role = ZeeWeaponRig.Role.SERVER
 	rig.authority = true
 	rig.tick_rate = ZeeWeaponPack.TICK_RATE
-	rig.player_ref = DotNodeRef.of_path(^"..")
+	rig.player_ref = GSNodeRef.of_path(^"..")
 	rig.ads_rules = ZeeAdsRules.new()
 	carrier.add_child(rig)
 	rig.setup()
@@ -669,20 +669,20 @@ func _suppressed_reach() -> void:
 
 
 ## A watcher's world model, through the rig that owns it and the replicated code: nothing here assigns the catalogue.
-func _drawing_replicated(id: StringName, code: int, cat: DotWeaponAttachments) -> void:
+func _drawing_replicated(id: StringName, code: int, cat: GSWeaponAttachments) -> void:
 	var watched := ZeeWorldModel.new()
 	add_child(watched)
 	var rig := ZeeWeaponRig.new()
 	rig.role = ZeeWeaponRig.Role.LOCAL
 	rig.tick_rate = ZeeWeaponPack.TICK_RATE
-	rig.world_model_ref = DotNodeRef.of_path(watched.get_path())
+	rig.world_model_ref = GSNodeRef.of_path(watched.get_path())
 	add_child(rig)
 	rig.setup()
 	rig.arsenal.attachments = cat
 	rig.give(id)
 	rig.arsenal.select(rig.arsenal.catalogue.get_def(id).slot, 0)
-	var ctx := DotWeaponContext.make(1, 1, Vector3.ZERO, Vector3.FORWARD)
-	rig.simulate_tick(DotWeaponCommand.new(), 1, ctx)
+	var ctx := GSWeaponContext.make(1, 1, Vector3.ZERO, Vector3.FORWARD)
+	rig.simulate_tick(GSWeaponCommand.new(), 1, ctx)
 	var source := GDScript.new()
 	source.source_code = "extends Node\nvar net_fire_seq := 0\nvar net_fire_kind := 0\nvar net_switching := false\nvar net_fitted := 0\n"
 	source.reload()
@@ -735,13 +735,13 @@ func _profiles() -> void:
 	set.clear_cache()
 	var stale := PackedStringArray()
 	for id in vanilla:
-		if FileAccess.get_file_as_string(DotWeaponProfiles.profile_path("zed_weapons", id)) != DotWeaponProfiles.to_yaml(vanilla[id], ZedDefExport.TITLE):
+		if FileAccess.get_file_as_string(GSWeaponProfiles.profile_path("zed_weapons", id)) != GSWeaponProfiles.to_yaml(vanilla[id], ZedDefExport.TITLE):
 			stale.append(id)
 	_check("shipped profiles are what the exporter writes (run tools/export-defs.sh): %s" % ", ".join(stale), stale.is_empty())
 	var tuned := _by_id(ZedWeaponPack.weapons())
 	var drift := PackedStringArray()
 	for id in vanilla:
-		if str(DotWeaponProfiles.flat_of(tuned[id])) != str(DotWeaponProfiles.flat_of(vanilla[id])):
+		if str(GSWeaponProfiles.flat_of(tuned[id])) != str(GSWeaponProfiles.flat_of(vanilla[id])):
 			drift.append(id)
 	_check("loading every shipped profile changes no number: %s" % ", ".join(drift), drift.is_empty())
 	_check("no shipped profile fails", ZedWeaponPack.errors.is_empty())
@@ -752,14 +752,14 @@ func _profiles() -> void:
 	_profile_file(tmp, "ak_rifle.yml", "magazine: -5\n")
 	ZedWeaponPack.base_roots = PackedStringArray([tmp])
 	var t2 := _by_id(ZedWeaponPack.weapons())
-	var u: DotWeaponDef = t2["uzi"]
-	_check("a file-set key overrides the builder", u.magazine == 12 and is_equal_approx((u.tuning as DotWeaponBallistics).damage, 99.0))
-	_check("a key the file leaves out keeps the builder's value", u.reload_ticks == vanilla["uzi"].reload_ticks and is_equal_approx((u.tuning as DotWeaponBallistics).spread, 2.0))
+	var u: GSWeaponDef = t2["uzi"]
+	_check("a file-set key overrides the builder", u.magazine == 12 and is_equal_approx((u.tuning as GSWeaponBallistics).damage, 99.0))
+	_check("a key the file leaves out keeps the builder's value", u.reload_ticks == vanilla["uzi"].reload_ticks and is_equal_approx((u.tuning as GSWeaponBallistics).spread, 2.0))
 	_check("a broken profile is reported and its weapon keeps the builder's numbers", ZedWeaponPack.errors.size() == 1 and t2["ak_rifle"].magazine == vanilla["ak_rifle"].magazine)
 	_check("the exporter's list ignores the profiles", _by_id(ZedDefExport.own_weapons())["uzi"].magazine == vanilla["uzi"].magazine)
 	ZedWeaponPack.pack_cfg_root = "user://zed_profiles_pack"
 	_profile_file("user://zed_profiles_pack", "tactical_smg.yml", "extra:\n  tuning:\n    damage: 55\n")
-	_check("a delivered pack's cfg root is read", is_equal_approx((_by_id(ZedWeaponPack.weapons())["tactical_smg"].tuning as DotWeaponBallistics).damage, 55.0))
+	_check("a delivered pack's cfg root is read", is_equal_approx((_by_id(ZedWeaponPack.weapons())["tactical_smg"].tuning as GSWeaponBallistics).damage, 55.0))
 	ZedWeaponPack.pack_cfg_root = ""
 
 	ZedWeaponPack.base_roots = PackedStringArray(["res://cfg"])
@@ -768,7 +768,7 @@ func _profiles() -> void:
 	var up := ZedWeaponPack.upgraded(&"ak_rifle", ["extended_mag"])
 	_check("an upgrade is applied to a copy", up.ok and up.value["def"].magazine == 40 and up.value["cost"] == 100 and vanilla["ak_rifle"].magazine == 30)
 	var choke := ZedWeaponPack.upgraded(&"pump_shotgun", ["choke"])
-	_check("a set upgrade changes an int field", choke.ok and (choke.value["def"].tuning as DotWeaponBallistics).pellets == 9)
+	_check("a set upgrade changes an int field", choke.ok and (choke.value["def"].tuning as GSWeaponBallistics).pellets == 9)
 	_check("an unknown weapon is refused", not ZedWeaponPack.upgraded(&"ghost", []).ok)
 	var wrote := ZeeDefExport.write_cfg("user://zed_profiles_export", "zed_weapons", ZedDefExport.TITLE, ZedDefExport.own_weapons())
 	_check("the export writes every profile and the upgrade folders", wrote.ok and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/ak_rifle/upgrades/extended_mag.yml") and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/uzi.yml"))
@@ -782,14 +782,14 @@ func _pack_ballistics() -> void:
 	_begin("pack ballistics")
 	var by_id := _by_id(ZedWeaponPack.weapons({}, false))
 	for id in [&"hunting_rifle", &"ak_rifle", &"service_pistol"]:
-		var b := by_id[id].tuning as DotWeaponBallistics
-		_check("%s is simulated" % id, DotWeaponTrajectory.is_simulated(b))
-		var d100 := float(DotWeaponTrajectory.drop_at(b, 100.0)["drop"])
-		var d300 := float(DotWeaponTrajectory.drop_at(b, 300.0)["drop"])
+		var b := by_id[id].tuning as GSWeaponBallistics
+		_check("%s is simulated" % id, GSWeaponTrajectory.is_simulated(b))
+		var d100 := float(GSWeaponTrajectory.drop_at(b, 100.0)["drop"])
+		var d300 := float(GSWeaponTrajectory.drop_at(b, 300.0)["drop"])
 		_check("%s drops more at 300 m than 100 m" % id, d100 > 0.0 and d300 > d100 * 3.0)
 		_check("%s 100 m drop is under 2 m" % id, d100 < 2.0)
-	var sil := by_id[&"silenced_pistol"].tuning as DotWeaponBallistics
-	_check("silenced pistol flies like the service pistol", sil.muzzle_velocity == (by_id[&"service_pistol"].tuning as DotWeaponBallistics).muzzle_velocity)
-	var pump := by_id[&"pump_shotgun"].tuning as DotWeaponBallistics
+	var sil := by_id[&"silenced_pistol"].tuning as GSWeaponBallistics
+	_check("silenced pistol flies like the service pistol", sil.muzzle_velocity == (by_id[&"service_pistol"].tuning as GSWeaponBallistics).muzzle_velocity)
+	var pump := by_id[&"pump_shotgun"].tuning as GSWeaponBallistics
 	_check("shotgun falls off fast", pump.falloff_start < 20.0 and pump.falloff_min < 0.3)
 	_end()

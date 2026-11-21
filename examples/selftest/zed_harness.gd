@@ -19,8 +19,8 @@ func _rig_catalogue_has(id: StringName) -> bool:
 	return ok
 
 
-func _arsenal() -> DotWeaponArsenal:
-	var arsenal := DotWeaponArsenal.new()
+func _arsenal() -> GSWeaponArsenal:
+	var arsenal := GSWeaponArsenal.new()
 	arsenal.catalogue = ZeeWeaponPack.catalogue()
 	arsenal.tick_rate = ZedWeaponPack.TICK_RATE
 	arsenal.authority = true
@@ -31,14 +31,14 @@ func _arsenal() -> DotWeaponArsenal:
 
 ## Ticks [param from] to [param to] with [param buttons] held, until [param release_at] when
 ## given. The outcomes that used something.
-func _run(arsenal: DotWeaponArsenal, from: int, to: int, buttons: int, release_at: int = -1) -> Array:
+func _run(arsenal: GSWeaponArsenal, from: int, to: int, buttons: int, release_at: int = -1) -> Array:
 	var out: Array = []
-	var previous: DotWeaponCommand = null
+	var previous: GSWeaponCommand = null
 
 	for tick in range(from, to):
-		var command := DotWeaponCommand.new()
+		var command := GSWeaponCommand.new()
 		command.buttons = buttons if release_at < 0 or tick < release_at else 0
-		var ctx := DotWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD)
+		var ctx := GSWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD)
 		ctx.authority = true
 		var o := arsenal.simulate_tick(command, ctx, previous)
 
@@ -58,7 +58,7 @@ func _profile_file(root: String, rel: String, text: String) -> void:
 	f.close()
 
 
-func _by_id(defs: Array[DotWeaponDef]) -> Dictionary:
+func _by_id(defs: Array[GSWeaponDef]) -> Dictionary:
 	var out := {}
 	for d in defs:
 		out[String(d.id)] = d

@@ -6,7 +6,7 @@ extends Node
 ## Where the target props come from.
 const TARGETS := "res://assets/blaster-kit/"
 
-@onready var _controller: DotFpsController = $Player/Controller
+@onready var _controller: GSFpsController = $Player/Controller
 @onready var _camera: Camera3D = $Player/Head/Camera
 
 

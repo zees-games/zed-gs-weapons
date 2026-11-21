@@ -12,19 +12,19 @@ A second copy of zee's rig, view model and effects for sixteen more weapons woul
 
 ## Weapon profiles
 
-`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through dot-weapon's `DotWeaponProfiles` (`overlay_set`, `tune`), only the keys a file sets (`DotProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
+`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through dot-weapon's `GSWeaponProfiles` (`overlay_set`, `tune`), only the keys a file sets (`GSProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
 
 ## The Workshop form
 
-`weapons/*.tres` (one `DotWeaponDef` each) and `provides.json` (schema 1, kind `weapon`, `meta.asset_root` `.`) publish the pack so that subscribing to it lists its weapons in a `DotWeaponCatalogue` following the content index. They are **generated** from `ZedWeaponPack.weapons` by `tools/export-defs.sh` (`ZedDefExport`, which reuses zee's `ZeeDefExport` for categories and the document); the suite's "Workshop files" section fails when they are stale, when an id is not a `ZedWeaponPack` weapon, or when one collides with zee's. Change a builder, re-run the script, commit all of it.
+`weapons/*.tres` (one `GSWeaponDef` each) and `provides.json` (schema 1, kind `weapon`, `meta.asset_root` `.`) publish the pack so that subscribing to it lists its weapons in a `GSWeaponCatalogue` following the content index. They are **generated** from `ZedWeaponPack.weapons` by `tools/export-defs.sh` (`ZedDefExport`, which reuses zee's `ZeeDefExport` for categories and the document); the suite's "Workshop files" section fails when they are stale, when an id is not a `ZedWeaponPack` weapon, or when one collides with zee's. Change a builder, re-run the script, commit all of it.
 
 ## Ticks at 64 Hz, and every row says so
 
-Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `DotWeaponDef.authored_tick_rate` to it, so dot-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-dot-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.
+Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `GSWeaponDef.authored_tick_rate` to it, so dot-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-dot-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.
 
 ## What a throwable does is the game's
 
-dot-weapon spawns nothing; a thrown weapon's use is a `DotWeaponSpawn` handed to the game. The molotov, pipe bomb and bile jar say what they are with tags (`ZedWeaponIds.TAG_MOLOTOV`, `TAG_PIPE_BOMB`, `TAG_BILE`) and the flamethrower with `TAG_INCENDIARY`, so a game that has fire, a lure and bile can do the right thing with a pack it has never heard of. game-zombie-zone's `ZzGame._throw` is the reference.
+dot-weapon spawns nothing; a thrown weapon's use is a `GSWeaponSpawn` handed to the game. The molotov, pipe bomb and bile jar say what they are with tags (`ZedWeaponIds.TAG_MOLOTOV`, `TAG_PIPE_BOMB`, `TAG_BILE`) and the flamethrower with `TAG_INCENDIARY`, so a game that has fire, a lure and bile can do the right thing with a pack it has never heard of. game-zombie-zone's `ZzGame._throw` is the reference.
 
 **A thrown weapon's fuse must outlast the longest hold.** dot-weapon's thrown behaviour reads a fuse used up by the cook as "it went off in the hand" and throws nothing. A bottle has no fuse, and the first molotov, written with `fuse_ticks` 0, never left the hand; it is ten seconds now and no game reads it. The suite's "throwing" section fails with the zero put back.
 
@@ -56,7 +56,7 @@ The assault carbine (2026-10-20) was the first of a second tier, followed the sa
 
 **Mounts follow the model's sockets** (2026-11-08): the carbine and AK take all five; the SMG and pump shotgun optic, muzzle, underbarrel, side; the pistol optic, muzzle, underbarrel; the hunting rifle (scoped) muzzle, underbarrel, side. None but the two rifles takes the extended magazine (its model is rifle-sized); the silenced pistol and uzi are kitbashes with no sockets and keep none. The selftest checks each mount has its socket and every node an offered attachment hides. zee draws the fitted parts; how each sits on these guns is unrendered.
 
-**Attachments are data here, the rules are dot-weapon's** (`DotWeaponAttachment`, `DotWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
+**Attachments are data here, the rules are dot-weapon's** (`GSWeaponAttachment`, `GSWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
 
 ## Every model stands alone, because a game is delivered as a pack
 

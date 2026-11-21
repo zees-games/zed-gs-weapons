@@ -62,7 +62,7 @@ That adds the sixteen weapons to zee-dot-weapons' catalogue, their models to its
 
 The models are under `assets/`. A game that vendors them (because it is delivered as a pack) copies `assets/weapon-pack` and `assets/food-kit` next to zee's art.
 
-The pack is also published as a Workshop weapon pack: `provides.json` and `weapons/*.tres` (kind `weapon`), generated from the code table by `tools/export-defs.sh`. Subscribing to it adds the weapons to a `DotWeaponCatalogue` that follows the content index.
+The pack is also published as a Workshop weapon pack: `provides.json` and `weapons/*.tres` (kind `weapon`), generated from the code table by `tools/export-defs.sh`. Subscribing to it adds the weapons to a `GSWeaponCatalogue` that follows the content index.
 
 ## Requirements
 

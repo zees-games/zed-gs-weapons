@@ -74,7 +74,7 @@ static func all() -> Array[StringName]:
 
 # --- Attachments -----------------------------------------------------------------
 #
-# dot-weapon's attachment ids ([DotWeaponAttachment]), each on one of its mounts. Named by
+# dot-weapon's attachment ids ([GSWeaponAttachment]), each on one of its mounts. Named by
 # what they do, like the weapons.
 
 const RED_DOT := &"red_dot"
