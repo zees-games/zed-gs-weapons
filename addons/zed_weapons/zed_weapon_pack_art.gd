@@ -14,6 +14,10 @@ const HQ_DIR := "res://assets/hq/"
 ## How much larger than zee's blaster pose a real-sized gun is drawn.
 const REAL_SCALE := 1.45
 ## Hip shift for the long-gun poses (view metres): REAL_SCALE made a 1 m gun land low and right with its grip out of frame.
+## The third-person size a heavy gun is drawn at, over the figure's hand scale: the figure is a big-headed
+## cartoon about a metre tall, and at REAL_SCALE times zee's heavy pose factor (0.62) a machine gun read as a pistol
+## (the visual judge, 2026-11-22: "toy-sized", 17 findings). Pistols and rifles are drawn as before (a rifle at this size is a plank past the figure's shoulder).
+const HEAVY_WORLD := 1.7
 const LONG_GUN_HIP := Vector3(-0.09, 0.08, 0.0)
 
 ## Which way the Weapon Pack's barrels point: +Z, the opposite of zee's blasters (-Z).
@@ -74,6 +78,12 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	art.pose = pose
 	art.view_scale = ZeeWeaponArtTable.pose_scale(pose) * REAL_SCALE
 	art.world_scale = REAL_SCALE
+	var world_factor := ZeeWeaponArtTable.pose_world_factor(pose)
+	if pose == ZeeWeaponArtTable.POSE_HEAVY:
+		# The pose factor (0.62) shrinks the model in the world; undo it so HEAVY_WORLD is what is seen. The hands
+		# frame takes world_scale as life size, so it keeps REAL_SCALE and the view model does not move.
+		art.hands_life = REAL_SCALE
+		art.world_scale = HEAVY_WORLD / world_factor
 	art.weight = ZeeWeaponArtTable.pose_weight(pose)
 	art.view_rotation = hold_rotation(ZeeWeaponArtTable.pose_rotation(pose))
 	art.aim_rotation = hold_rotation(Vector3.ZERO)
@@ -87,7 +97,7 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	if pose == ZeeWeaponArtTable.POSE_RIFLE or pose == ZeeWeaponArtTable.POSE_HEAVY:
 		art.view_offset += LONG_GUN_HIP
 	art.aim_offset += art.aim_transform().basis * lift
-	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale, float(OS.get_environment("ZW_Z_" + String(id)) if OS.get_environment("ZW_Z_" + String(id)) != "" else "0"))
+	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale * world_factor, float(OS.get_environment("ZW_Z_" + String(id)) if OS.get_environment("ZW_Z_" + String(id)) != "" else "0"))
 	return art
 
 
