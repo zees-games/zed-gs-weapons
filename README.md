@@ -4,7 +4,7 @@ Sixteen real-world weapons and zombie-game throwables for GameSpice games: pisto
 
 ### In GameSpice and Fatal Contact
 
-- GameSpice:** the pack is published to the Workshop as `gamemann/zed-gs-weapons`, beside `gamemann/zee-gs-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
+- **GameSpice:** the pack is published to the Workshop as `gamemann/zed-gs-weapons`, beside `gamemann/zee-gs-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
 - **Fatal Contact:** FC's own weapons are [fc-weapons](https://github.com/zees-games/fc-weapons). An FC server can add this pack and zee-gs-weapons to its overlay for extra weapons.
 - **Your own Godot game:** link `addons/zed_weapons` beside `addons/zee_weapons` and call `ZedWeaponPack.install()`, as in [Using it](#using-it). Server owners retune any weapon in `cfg/addons/zed_weapons/weapon/<id>.yml`.
 
