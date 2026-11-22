@@ -49,3 +49,5 @@ Thumbs.db
 /addons/gs_sim
 /addons/gs_sql
 /addons/godot-sqlite
+/addons/gs_game
+/addons/gs_animation
