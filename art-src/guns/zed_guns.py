@@ -264,6 +264,7 @@ def machine_gun():
     parts.append(cyl(0.02, 0.05, "cbc", (0, front + 0.43, zc - 0.004), material="blued", sides=8, chamfer=0.05))
     parts.append(box((0.006, 0.012, 0.04), "ccd", (0, front + 0.3, zc + 0.025), "blued", 0.1))
     stock = donor("AssaultRifle_5", keep=lambda p: p.uc < 0.3, unit=U, default_mat="olive")
+    scale(stock, (1.7, 1.0, 1.0))  # seen end-on, aimed, the donor stock was a thin blade
     back = at(recv, "cbu")
     place(stock, "cfu", (0, back.y + 0.004, back.z - 0.008))
     bevel(stock, 0.0012)
