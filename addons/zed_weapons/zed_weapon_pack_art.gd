@@ -51,9 +51,26 @@ static func art_entries() -> Array[ZeeWeaponArt]:
 ## A gun: lies along +Z, stands on its base, [param height] metres tall (measured).
 ## On zee's hold, with its rotations handed over as [method hold_rotation]: the 180-degree turn
 ## flips a pitch and a roll, and written straight across the cant showed the gun's underside.
+## Height of each kitbash gun's bore above its base (the model's origin), from `tools/bore.gd`.
+## zee measures the muzzle at the far end of the mesh at the origin's height, which is the gun's
+## bottom, so every muzzle flash and tracer started at the base of the gun, below and beside the
+## barrel (the visual judge's "flash at the support hand / mid-magazine", 2026-11-22).
+const BORE_HEIGHT := {
+	"uzi": 0.162,
+	"sawed_off": 0.105,
+	"machine_gun": 0.120,
+	"grenade_launcher": 0.185,
+	"rocket_launcher": 0.140,
+	"flamethrower": 0.090,
+	"silenced_pistol": 0.118,
+}
+
+
 static func _gun_art(id: StringName, model: String, pose: StringName, height: float, path: String = "") -> ZeeWeaponArt:
 	var art := ZeeWeaponArt.make(id, path if path != "" else KIT_DIR + model + ".glb")
 	art.model_forward = GUN_FORWARD
+	if path == "" and BORE_HEIGHT.has(model):
+		art.muzzle_offset = Vector3(0.0, float(BORE_HEIGHT[model]), 0.0)
 	art.pose = pose
 	art.view_scale = ZeeWeaponArtTable.pose_scale(pose) * REAL_SCALE
 	art.world_scale = REAL_SCALE
