@@ -51,6 +51,7 @@ The assault carbine (2026-10-20) was the first of a second tier, followed the sa
 - **The gun's parts are nodes**: `body`, `magazine`, `rear_sight`, so an attachment can hide what it replaces (`ATTACHMENT_ART[id].hides`: the scope hides the rear sight, the extended magazine the magazine).
 - **Sockets are empties named `socket_<mount>`** (`socket_name()`), identity rotation; each attachment's origin is where it meets the gun, so it is parented to the socket with no offset. A socket that carried the export's 180-degree turn put the suppressor on backwards, and stale `matrix_world` put every socket on one point: `hq_kit.export_glb` updates the view layer and resets the empties' rotation.
 - **`sight_rear` and `sight_front` mark the real sights**, and zee aims down them and builds no ring (zee's `IronSight.from_marks`).
+- **Texturing a flat-colour GLB (kitbash guns, c8ee190) uses the shared bake**, never a copy: `addons/gs_weapon/tools/texbake/tex_pipeline.sh <src> <work> <out> <samples> name[:size]...` (GameSpice Weapon; Blender 4.3 plus numpy, scipy, PIL). Import the result with `gltf/embedded_image_handling=2`.
 - **The `.glb.import` files embed the textures as Basis Universal** (`gltf/embedded_image_handling=2`): the model stands alone in a delivered pack, and nothing is extracted next to it.
 - `art-src/hq/render_hq.py` renders Cycles frames of the exported files with attachments on their sockets, as the game fits them; the frames of record are in `reports/models/2026-10-20/`.
 
