@@ -143,6 +143,11 @@ sheet() {
     ffmpeg -v error -y -framerate 1 -i "$tmp/f_%02d.png" \
         -vf "scale=640:-1,tile=3x6:padding=4:color=black" -frames:v 1 \
         "$dir/sheet_$weapon.png" && echo "wrote $dir/sheet_$weapon.png"
+    # SHOT_KEEP=1: keep the frames (screenshots/frames_<id>/f_NN.png) for the visual judge,
+    # which wants a clip per weapon.
+    if [ -n "${SHOT_KEEP:-}" ]; then
+        mkdir -p "$dir/frames_$weapon" && cp "$tmp"/f_*.png "$dir/frames_$weapon/"
+    fi
     rm -rf "$tmp"
 }
 
