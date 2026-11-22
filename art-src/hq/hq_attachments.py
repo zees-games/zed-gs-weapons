@@ -16,10 +16,10 @@ import hq_m4
 # Height of an optic's axis above the rail's teeth, mm. 30 puts the red dot's axis just above
 # the carbine's iron-sight line (front post 26 mm over the rail): the irons show in the bottom
 # third of the window. The aim line is measured from these by ZedWeaponPack, never guessed.
-RED_GS_AXIS = 30.0
+RED_DOT_AXIS = 30.0
 SCOPE_AXIS = 38.0
 INFO = {
-    "red_dot": {"mount": "optic", "axis_mm": RED_GS_AXIS, "hides": []},
+    "red_dot": {"mount": "optic", "axis_mm": RED_DOT_AXIS, "hides": []},
     "scope_4x": {"mount": "optic", "axis_mm": SCOPE_AXIS, "hides": ["rear_sight"]},
     "suppressor": {"mount": "muzzle", "length_mm": 172.0, "hides": []},
     "foregrip": {"mount": "underbarrel", "hides": []},
@@ -41,7 +41,7 @@ def knob(name, y, z, hi, r=5.0, length=8.0, mat="steel"):
 
 
 def red_dot(hi):
-    a = RED_GS_AXIS
+    a = RED_DOT_AXIS
     parts = [clamp("rd_clamp", -18, 18, hi)]
     riser = K.profile("rd_riser", [(-16, 6), (16, 6), (14, a - 12), (-14, a - 12)], -9, 9, "anod")
     parts.append(K.finish(riser, hi, bevel_mm=0.8))
