@@ -264,22 +264,20 @@ def machine_gun():
     parts.append(cyl(0.02, 0.05, "cbc", (0, front + 0.43, zc - 0.004), material="blued", sides=8, chamfer=0.05))
     parts.append(box((0.006, 0.012, 0.04), "ccd", (0, front + 0.3, zc + 0.025), "blued", 0.1))
     stock = donor("AssaultRifle_5", keep=lambda p: p.uc < 0.3, unit=U, default_mat="olive")
-    scale(stock, (1.7, 1.0, 1.0))  # seen end-on, aimed, the donor stock was a thin blade
+    scale(stock, (1.7, 0.6, 1.0))  # seen end-on the donor stock was a thin blade; shortened so it clears the shoulder
     back = at(recv, "cbu")
     place(stock, "cfu", (0, back.y + 0.004, back.z - 0.008))
     bevel(stock, 0.0012)
     parts.append(stock)
-    parts.append(box((0.06, 0.09, 0.014), "ccd", (0, u2y(recv, 0.43), at(recv, "ccu").z - 0.004), "gunmetal", 0.2))
     parts.append(box((0.04, 0.09, 0.075), "rcu", (-0.026, u2y(recv, 0.45), v2z(recv, 0.3)), "olive", 0.15))
     for i in range(7):
         parts.append(cyl(0.005, 0.034, "ccc", (-0.026 + 0.003 * math.sin(i * 0.9), u2y(recv, 0.45), v2z(recv, 0.3) + 0.01 + i * 0.012),
                          axis="X", material="brass", sides=6))
-    parts.append(box((0.01, 0.1, 0.03), "ccd", (0, u2y(recv, 0.5), at(recv, "ccu").z + 0.006), "blued", 0.2))
     for sx in (-1, 1):
-        leg = box((0.008, 0.008, 0.15), "ccu", (sx * 0.045, front + 0.2, zc - 0.03), "blued", 0.1)
-        rotate(leg, sx * 25, "Y", about=Vector((sx * 0.02, front + 0.2, zc - 0.03)))
+        leg = box((0.012, 0.012, 0.11), "ccu", (sx * 0.02, front + 0.2, zc - 0.03), "blued", 0.1)
+        rotate(leg, -sx * 25, "Y", about=Vector((sx * 0.02, front + 0.2, zc - 0.03)))
         parts.append(leg)
-    parts.append(box((0.05, 0.016, 0.016), "ccc", (0, front + 0.2, zc - 0.03), "blued", 0.2))
+    parts.append(box((0.05, 0.02, 0.02), "ccc", (0, front + 0.2, zc - 0.03), "blued", 0.2))
     return join(parts, "machine_gun"), 0.78
 
 

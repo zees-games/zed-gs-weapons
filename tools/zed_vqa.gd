@@ -77,7 +77,7 @@ func _stage(item: String, clip: String) -> GSResult:
 	if _world != null:
 		_world.queue_free()
 	_world = ZeeWorldModel.new()
-	_world.effects = false
+	_world.effects = true
 	if not _world.attach_to(_figure):
 		return GSResult.fail(GSError.CODE_UNSUPPORTED, "the person has no hand")
 	var _equipped := _world.equip(_art)
@@ -122,7 +122,7 @@ func _drive(_item: String, clip: String, t: float, frame: int) -> void:
 		_view.on_fired(_recoil)
 		if _kind == ZeeWeaponNet.KIND_SWING:
 			_figure.swing()
-		_world.on_fired(Vector2(1.2, 0.0), _kind, false)
+		_world.on_fired(Vector2(1.2, 0.0), _kind, true)
 	_view.advance(dt)
 	_figure.animate(0.0, dt)
 	_world.advance(dt)
